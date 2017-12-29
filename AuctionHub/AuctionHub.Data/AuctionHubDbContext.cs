@@ -21,6 +21,8 @@
 
         public DbSet<Town> Towns { get; set; }
 
+        public DbSet<Category> Categories { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder
@@ -58,6 +60,13 @@
                 .HasOne(p => p.Owner)
                 .WithMany(o => o.OwnedProducts)
                 .HasForeignKey(p => p.OwnerId);
+
+            builder
+                .Entity<Category>()
+                .HasMany(c => c.Auctions)
+                .WithOne(a => a.Category)
+                .HasForeignKey(a => a.CategoryId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             base.OnModelCreating(builder);
         }

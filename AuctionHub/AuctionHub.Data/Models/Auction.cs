@@ -22,5 +22,9 @@
         public User LastBidder { get; set; }
 
         public List<Bid> Bids { get; set; } = new List<Bid>();
+
+        public Category Category { get; set; }
+
+        public int CategoryId { get; set; }
     }
 }

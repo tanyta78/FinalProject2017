@@ -12,9 +12,10 @@ using System;
 namespace AuctionHub.Data.Migrations
 {
     [DbContext(typeof(AuctionHubDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20171229135511_CategoriesTable")]
+    partial class CategoriesTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

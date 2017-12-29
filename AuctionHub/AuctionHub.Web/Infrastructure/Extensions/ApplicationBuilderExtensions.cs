@@ -78,11 +78,7 @@
         /// </param>
         public static void SeedData(this IApplicationBuilder app)
         {
-            
-
-
-
-            using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            using (IServiceScope serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
                 AuctionHubDbContext db = serviceScope.ServiceProvider.GetService<AuctionHubDbContext>();
 

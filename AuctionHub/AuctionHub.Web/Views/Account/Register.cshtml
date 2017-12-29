@@ -10,12 +10,14 @@
         <form asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post">
             <h4>Create a new account.</h4>
             <hr />
-            <div class="form-group">
+            <div class="form-group input-field">
+                <i class="material-icons prefix">email</i>
                 <label asp-for="Email"></label>
                 <input asp-for="Email" class="form-control" />
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group input-field">
+                <i class="material-icons prefix">account_circle</i>
                 <label asp-for="Name"></label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
@@ -25,12 +27,14 @@
                 <select asp-for="Town" asp-items="@Model.Towns" class="form-control"></select>
                 <span asp-validation-for="Town" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group input-field">
+                <i class="material-icons prefix">security</i>
                 <label asp-for="Password"></label>
                 <input asp-for="Password" class="form-control" />
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group input-field">
+                <i class="material-icons prefix">security</i>
                 <label asp-for="ConfirmPassword"></label>
                 <input asp-for="ConfirmPassword" class="form-control" />
                 <span asp-validation-for="ConfirmPassword" class="text-danger"></span>

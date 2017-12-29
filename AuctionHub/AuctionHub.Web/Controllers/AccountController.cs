@@ -63,6 +63,7 @@
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
+                    this.ShowNotification(NotificationType.Success, Messages.LoginSuccessful);
                     return RedirectToLocal(returnUrl);
                 }
                 if (result.RequiresTwoFactor)
@@ -249,6 +250,7 @@
         {
             await _signInManager.SignOutAsync();
             _logger.LogInformation("User logged out.");
+            this.ShowNotification(NotificationType.Success, Messages.LogoutSuccessful);
             return RedirectToAction(nameof(HomeController.Index), "Home");
         }
 
