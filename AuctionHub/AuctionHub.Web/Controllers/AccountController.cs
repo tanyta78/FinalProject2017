@@ -1,32 +1,41 @@
 ﻿namespace AuctionHub.Web.Controllers
 {
+    using AuctionHub.Common;
+    using AuctionHub.Services.Contracts;
     using Data.Models;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Rendering;
     using Microsoft.Extensions.Logging;
     using Models.AccountViewModels;
     using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Security.Claims;
     using System.Threading.Tasks;
 
     [Authorize]
     [Route("[controller]/[action]")]
-    public class AccountController : Controller
+    public class AccountController : BaseController
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly ILogger _logger;
+        private readonly ITownService towns;
 
         public AccountController(
             UserManager<User> userManager,
             SignInManager<User> signInManager,
-            ILogger<AccountController> logger)
+            ILogger<AccountController> logger,
+            ITownService towns)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            this.towns = towns;
         }
 
         [TempData]
@@ -71,7 +80,7 @@
                     return View(model);
                 }
             }
-            
+
             return View(model);
         }
 
@@ -195,7 +204,8 @@
         public IActionResult Register(string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
-            return View();
+            IEnumerable<SelectListItem> towns = this.towns.All().Select(t => new SelectListItem() { Text = t.Name, Value = t.Id.ToString() });
+            return View(new RegisterViewModel() { Towns = towns });
         }
 
         [HttpPost]
@@ -206,7 +216,14 @@
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var user = new User { UserName = model.Email, Email = model.Email };
+                Town initialTown = towns.GetByName("Other");
+                var user = new User
+                {
+                    UserName = model.Email,
+                    Email = model.Email,
+                    Name = model.Name,
+                    Address = new Address() { Town = initialTown, Country = "Other" }
+                };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -218,11 +235,11 @@
 
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     _logger.LogInformation("User created a new account with password.");
+                    this.ShowNotification(NotificationType.Success, Messages.RegistrationSuccessful);
                     return RedirectToLocal(returnUrl);
                 }
                 AddErrors(result);
             }
-            
             return View(model);
         }
 
@@ -260,7 +277,7 @@
             {
                 return RedirectToAction(nameof(Login));
             }
-            
+
             var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
             if (result.Succeeded)
             {
@@ -354,10 +371,10 @@
                 var code = await _userManager.GeneratePasswordResetTokenAsync(user);
                 //var callbackUrl = Url.ResetPasswordCallbackLink(user.Id, code, Request.Scheme);
                 //await _emailSender.SendEmailAsync(model.Email, "Reset Password",
-                   //$"Please reset your password by clicking here: <a href='{callbackUrl}'>link</a>");
+                //$"Please reset your password by clicking here: <a href='{callbackUrl}'>link</a>");
                 return RedirectToAction(nameof(ForgotPasswordConfirmation));
             }
-            
+
             return View(model);
         }
 

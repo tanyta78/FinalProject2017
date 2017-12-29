@@ -1,5 +1,7 @@
 ﻿namespace AuctionHub.Web
 {
+    using AuctionHub.Services.Contracts;
+    using AuctionHub.Services.Implementations;
     using AutoMapper;
     using Data;
     using Data.Models;
@@ -38,6 +40,8 @@
 
             services.AddAutoMapper();
 
+            services.AddTransient<ITownService, TownService>();
+
             services.AddMvc(options =>
             {
                 options.Filters.Add<AutoValidateAntiforgeryTokenAttribute>();
@@ -73,6 +77,7 @@
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+            app.SeedData();
         }
     }
 }

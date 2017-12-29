@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using AuctionHub.Common
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -48,6 +49,9 @@
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+        <script src="~/js/notifier.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
     </environment>
     <environment exclude="Development">
         <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
@@ -66,5 +70,19 @@
     </environment>
 
     @RenderSection("Scripts", required: false)
+    @{
+        @if (ViewBag.message != null)
+        {
+            <script>
+                notifier.showMessage('@ViewBag.message', '@ViewBag.messageType');
+            </script>
+        }
+        else if (TempData[Constants.NotificationMessageKey] != null)
+        {
+            <script>
+                notifier.showMessage('@TempData[Constants.NotificationMessageKey]', '@TempData[Constants.NotificationTypeKey]');
+            </script>
+        }
+    }
 </body>
 </html>
