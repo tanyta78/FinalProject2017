@@ -33,3 +33,14 @@
         display: none;
     }
 }
+
+/*This is done to push the footer to bottom when there is not enough content*/
+body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+main {
+    flex: 1 0 auto;
+}
