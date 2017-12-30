@@ -3,15 +3,43 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Net;
     using System.Threading.Tasks;
     using AuctionHub.Data;
     using AuctionHub.Data.Models;
+    using AuctionHub.Web.Models;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
 
     public class ProductController : Controller
     {
+        // GET: /Product/Details/{id}
+        [HttpGet]
+        public IActionResult Details(int? productId)
+        {
+            if (productId == null)
+            {
+                return BadRequest();
+            }
+
+            using (var db = new AuctionHubDbContext())
+            {
+                var currentProduct = db
+                    .Products
+                    .Include(p => p.Owner)
+                    .FirstOrDefault(p => p.Id == productId);
+
+                if (currentProduct == null)
+                {
+                    return NotFound();
+                }
+
+                return View(currentProduct);
+            }
+        }
+
+
         // GET: /Product/Create
         [HttpGet]
         [Authorize]
@@ -60,6 +88,74 @@
 
                 return View(allProducts);
             }
+        }
+
+        // GET: /Product/Edit/{id}
+        [HttpGet]
+        [Authorize]
+        public IActionResult Edit(int? productId)
+        {
+            if (productId == null)
+            {
+                return BadRequest();
+            }
+
+            using (var db = new AuctionHubDbContext())
+            {
+                var loggedUserId = db.Users.First(u => u.Name == this.User.Identity.Name).Id;
+
+                var productToEdit = db
+                    .Products
+                    .FirstOrDefault(p => p.Id == productId);
+
+                if (!IsUserAuthorizedToEdit(productToEdit, loggedUserId))
+                {
+                    return Forbid();
+                }
+
+                if (productToEdit == null)
+                {
+                    return NotFound();
+                }
+
+                var model = new ProductViewModel(productToEdit.Id, productToEdit.Name, productToEdit.Description);
+
+                return View(model);
+            }
+        }
+
+        // POST: /Product/Edit
+        [HttpPost]
+        [Authorize]
+        public IActionResult Edit(ProductViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                using (var db = new AuctionHubDbContext())
+                {
+                    var productToEdit = db
+                        .Products
+                        .First(p => p.Id == model.Id);
+
+                    productToEdit.Name = model.Name;
+                    productToEdit.Description = model.Description;
+
+                    db.Entry(productToEdit).State = EntityState.Modified;
+                    db.SaveChanges();
+
+                    return RedirectToAction("Details/" + productToEdit.Id, "Product");
+                }
+            }
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        private bool IsUserAuthorizedToEdit(Product productToEdit, string loggedUserId)
+        {
+            bool isAdmin = this.User.IsInRole("Administrator");
+            bool isAuthor = productToEdit.OwnerId == loggedUserId;
+
+            return isAdmin || isAuthor;
         }
     }
 }
