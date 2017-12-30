@@ -136,7 +136,7 @@
                     var productToEdit = db
                         .Products
                         .First(p => p.Id == model.Id);
-
+                    
                     productToEdit.Name = model.Name;
                     productToEdit.Description = model.Description;
 
@@ -148,6 +148,70 @@
             }
 
             return RedirectToAction("Index", "Home");
+        }
+
+        // GET: /Product/Delete/{id}
+        [HttpGet]
+        [Authorize]
+        public IActionResult Delete(int? productId)
+        {
+            if (productId == null)
+            {
+                return BadRequest();
+            }
+
+            using (var db = new AuctionHubDbContext())
+            {
+                var loggedUserId = db.Users.First(u => u.Name == this.User.Identity.Name).Id;
+
+                var productToBeDeleted = db
+                    .Products
+                    .FirstOrDefault(p => p.Id == productId);
+
+                if (productToBeDeleted == null)
+                {
+                    return NotFound();
+                }
+
+                if (!IsUserAuthorizedToEdit(productToBeDeleted, loggedUserId))
+                {
+                    return Forbid();
+                }
+
+                return View(productToBeDeleted);
+            }
+        }
+
+        // POST: /Product/Delete/{id}
+        [HttpPost]
+        [Authorize]
+        [ActionName("Delete")]
+        public IActionResult DeleteConfirmed(int? productId)
+        {
+            if (productId == null)
+            {
+                return BadRequest();
+            }
+
+            using (var db = new AuctionHubDbContext())
+            {
+                var productToBeDeleted = db
+                    .Products
+                    .FirstOrDefault(p => p.Id == productId);
+
+                if (productToBeDeleted == null)
+                {
+                    return NotFound();
+                }
+
+                // Here, before we delete the product, its pictures in the file system should be deleted as well!
+                // DeleteProductPictures(productToBeDeleted);
+
+                db.Products.Remove(productToBeDeleted);
+                db.SaveChanges();
+
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         private bool IsUserAuthorizedToEdit(Product productToEdit, string loggedUserId)
