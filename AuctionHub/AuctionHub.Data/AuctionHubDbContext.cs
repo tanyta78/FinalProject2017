@@ -23,6 +23,8 @@
 
         public DbSet<Category> Categories { get; set; }
 
+        public DbSet<Picture> Pictures { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder
@@ -67,6 +69,18 @@
                 .WithOne(a => a.Category)
                 .HasForeignKey(a => a.CategoryId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder
+                .Entity<Picture>()
+                .HasOne(p => p.Author)
+                .WithMany(a => a.Pictures)
+                .HasForeignKey(p => p.AuthorId);
+
+            builder
+                .Entity<Picture>()
+                .HasOne(p => p.Product)
+                .WithMany(pr => pr.Pictures)
+                .HasForeignKey(p => p.ProductId);
 
             base.OnModelCreating(builder);
         }

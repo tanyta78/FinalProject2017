@@ -27,5 +27,7 @@
         public List<Bid> Bids { get; set; } = new List<Bid>();
 
         public List<Auction> ParticipatedAuctions { get; set; } = new List<Auction>();
+
+        public List<Picture> Pictures { get; set; } = new List<Picture>();
     }
 }
