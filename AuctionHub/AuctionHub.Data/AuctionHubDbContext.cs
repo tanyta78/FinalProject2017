@@ -1,5 +1,6 @@
 ﻿namespace AuctionHub.Data
 {
+    using Configuration;
     using Data.Models;
     using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore;
@@ -31,62 +32,14 @@
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder
-                .Entity<Address>()
-                .HasMany(a => a.Users)
-                .WithOne(u => u.Address)
-                .HasForeignKey(u => u.AddressId);
+            builder.ApplyConfiguration(new AddressConfig());
+            builder.ApplyConfiguration(new ProductConfig());
+            builder.ApplyConfiguration(new AuctionConfig());
+            builder.ApplyConfiguration(new BidConfig());
+            builder.ApplyConfiguration(new CategoryConfig());
+            builder.ApplyConfiguration(new PictureConfig());
 
-            builder
-                .Entity<Address>()
-                .HasOne(a => a.Town)
-                .WithMany(t => t.Addresses)
-                .HasForeignKey(a => a.TownId);
-
-            builder
-                .Entity<Auction>()
-                .HasOne(a => a.LastBidder)
-                .WithMany(b => b.ParticipatedAuctions)
-                .HasForeignKey(a => a.LastBidderId);
-
-            builder
-                .Entity<Auction>()
-                .HasMany(a => a.Bids)
-                .WithOne(b => b.Auction)
-                .HasForeignKey(b => b.AuctionId);
-
-            builder
-                .Entity<Bid>()
-                .HasOne(b => b.User)
-                .WithMany(u => u.Bids)
-                .HasForeignKey(b => b.UserId);
-
-            builder
-                .Entity<Product>()
-                .HasOne(p => p.Owner)
-                .WithMany(o => o.OwnedProducts)
-                .HasForeignKey(p => p.OwnerId);
-
-            builder
-                .Entity<Category>()
-                .HasMany(c => c.Auctions)
-                .WithOne(a => a.Category)
-                .HasForeignKey(a => a.CategoryId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            builder
-                .Entity<Picture>()
-                .HasOne(p => p.Author)
-                .WithMany(a => a.Pictures)
-                .HasForeignKey(p => p.AuthorId);
-
-            builder
-                .Entity<Picture>()
-                .HasOne(p => p.Product)
-                .WithMany(pr => pr.Pictures)
-                .HasForeignKey(p => p.ProductId);
-
-            base.OnModelCreating(builder);
+           base.OnModelCreating(builder);
         }
     }
 }

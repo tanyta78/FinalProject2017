@@ -6,7 +6,7 @@
     public class Auction
     {
         public int Id { get; set; }
-
+        
         public DateTime Duration { get; set; }
 
         public decimal Price { get; set; }
@@ -26,5 +26,9 @@
         public Category Category { get; set; }
 
         public int CategoryId { get; set; }
+
+        public int ProductId { get; set; }
+
+        public Product Product { get; set; }
     }
 }
