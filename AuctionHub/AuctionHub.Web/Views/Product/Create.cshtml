@@ -1,10 +1,34 @@
-﻿@{
+﻿@model AuctionHub.Data.Models.Product
+@{
     ViewData["Title"] = "Create";
 }
 
-@using (Html.BeginForm("Index", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
-{
+<form asp-controller="Product" asp-action="Create" method="post">
+    <div>
+        @Html.LabelFor(m => m.Name)
+        <div>
+            @Html.TextBoxFor(m => m.Name)
+        </div>
+    </div>
+
+    <div>
+        @Html.LabelFor(m => m.Description)
+        <div>
+            @Html.TextBoxFor(m => m.Description)
+        </div>
+    </div>
+
+    <div>
+        <div>
+            @Html.ActionLink("Cancel", "Index", "Home", null, new { @class = "btn btn-default" })
+            <input type="submit" value="Create" class="btn btn-success" />
+        </div>
+    </div>
+</form>
+
+@*<h5>Upload pictures:</h5>
+
     <input type="file" class="grey-text text-lighten" name="UploadFile" />
-    <input type="submit" class="btn btn-link navbar-btn navbar-link" name="submitID" id="submitID" value="Upload File" />
-}
+    <input type="submit" class="btn btn-link navbar-btn navbar-link" name="submitID" id="submitID" value="Upload File" />*@
+    }
 
