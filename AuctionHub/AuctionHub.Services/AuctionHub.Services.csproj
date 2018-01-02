@@ -5,11 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
+    <ProjectReference Include="..\AuctionHub.Common\AuctionHub.Common.csproj" />
+    <ProjectReference Include="..\AuctionHub.Data\AuctionHub.Data.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AuctionHub.Data\AuctionHub.Data.csproj" />
+    <Folder Include="Models\" />
   </ItemGroup>
 
 </Project>

@@ -30,6 +30,12 @@
                     <a href="#" class="brand-logo center">Logo</a>
                     <ul class="left hide-on-med-and-down">
                         <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+
+                        @if (User.IsInRole(WebConstants.AdministratorRole))
+                        {
+                            <li><a asp-area="Admin" asp-controller="Users" asp-action="Index">Users</a></li>
+                        }
+
                         @await Html.PartialAsync("_LoginPartial")
                     </ul>
                 </div>
