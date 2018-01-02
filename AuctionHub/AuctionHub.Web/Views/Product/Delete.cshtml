@@ -1,5 +1,9 @@
-﻿
+﻿@model Product
 @{
     ViewData["Title"] = "Delete";
 }
 <h2>Delete</h2>
+
+<form asp-action="Delete" method="post">
+    <input type="submit" value="Delete"/>
+</form>

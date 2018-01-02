@@ -6,7 +6,7 @@
     using Microsoft.EntityFrameworkCore;
     using Models.AuctionViewModels;
 
-    public class AuctionController:BaseController
+    public class AuctionController : BaseController
     {
         private readonly AuctionHubDbContext db;
         public AuctionController(AuctionHubDbContext db)

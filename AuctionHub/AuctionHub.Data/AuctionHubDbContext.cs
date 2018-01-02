@@ -7,10 +7,6 @@
 
     public class AuctionHubDbContext : IdentityDbContext<User>
     {
-        public AuctionHubDbContext()
-        {
-        }
-
         public AuctionHubDbContext(DbContextOptions<AuctionHubDbContext> options)
             : base(options)
         {

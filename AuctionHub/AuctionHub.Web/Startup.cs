@@ -43,6 +43,7 @@
             services.AddDomainServices();
 
             services.AddTransient<ITownService, TownService>();
+            services.AddTransient<IProductService, ProductService>();
 
             services.AddMvc(options =>
             {
