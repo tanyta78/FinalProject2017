@@ -1,5 +1,6 @@
 ﻿namespace AuctionHub.Web.Controllers
 {
+    using AuctionHub.Common;
     using Data;
     using Data.Models;
     using Microsoft.AspNetCore.Authorization;
@@ -10,7 +11,7 @@
     using System.Threading.Tasks;
     using Web.Models;
 
-    public class ProductController : Controller
+    public class ProductController : BaseController
     {
         private readonly AuctionHubDbContext db;
         private readonly UserManager<User> userManager;
@@ -69,7 +70,7 @@
                 this.db.Products.Add(productToCreate);
                 this.db.SaveChanges();
 
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction(nameof(HomeController.Index));
 
             }
 
@@ -143,7 +144,7 @@
 
             }
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction(nameof(HomeController.Index));
         }
 
         // GET: /Product/Delete/{id}
@@ -191,9 +192,8 @@
 
             this.db.Products.Remove(productToBeDeleted);
             this.db.SaveChanges();
-
-            return RedirectToAction("Index", "Home");
-
+            this.ShowNotification(NotificationType.Success, Messages.ProductDeleted);
+            return RedirectToAction(nameof(HomeController.Index));
         }
 
         private bool IsUserAuthorizedToEdit(Product productToEdit, string loggedUserId)
