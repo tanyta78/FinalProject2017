@@ -2,5 +2,10 @@
     ViewData["Title"] = "Create";
 }
 
-<h2>Create</h2>
+@using (Html.BeginForm("Index", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+
+    <input type="file" name="UploadFile" />
+    <input type="submit" name="submitID" id="submitID" value="Upload File" />
+}
 
