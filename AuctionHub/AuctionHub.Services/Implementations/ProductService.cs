@@ -3,12 +3,9 @@
     using AuctionHub.Data;
     using AuctionHub.Data.Models;
     using AuctionHub.Services.Contracts;
-    using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
-    using Microsoft.AspNetCore.Identity;
-    using System;
-    using System.Linq;
     using System.Collections.Generic;
+    using System.Linq;
 
     public class ProductService : IProductService
     {

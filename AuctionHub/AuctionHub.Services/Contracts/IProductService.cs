@@ -1,11 +1,8 @@
-﻿using AuctionHub.Data.Models;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace AuctionHub.Services.Contracts
+﻿namespace AuctionHub.Services.Contracts
 {
+    using AuctionHub.Data.Models;
+    using System.Collections.Generic;
+
     public interface IProductService
     {
         Product Details(int? id);
