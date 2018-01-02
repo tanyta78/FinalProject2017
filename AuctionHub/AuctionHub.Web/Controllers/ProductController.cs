@@ -1,5 +1,6 @@
 ﻿namespace AuctionHub.Web.Controllers
 {
+    using AuctionHub.Services.Contracts;
     using Data;
     using Data.Models;
     using Microsoft.AspNetCore.Authorization;
@@ -8,16 +9,19 @@
     using System.Linq;
     using Web.Models;
 
-    public class ProductController : Controller
+    public class ProductController : BaseController
     {
+        private readonly IProductService productService;
         private readonly AuctionHubDbContext db;
-        public ProductController(AuctionHubDbContext db)
+
+        public ProductController(AuctionHubDbContext db, IProductService productService)
         {
+            this.productService = productService;
             this.db = db;
         }
-
-        // GET: /Product/Details/{id}
+        
         [HttpGet]
+        [Route("Product/Details/{id}")]
         public IActionResult Details(int? productId)
         {
             if (productId == null)
@@ -25,66 +29,45 @@
                 return BadRequest();
             }
 
-            var currentProduct = db
-                .Products
-                .Include(p => p.Owner)
-                .FirstOrDefault(p => p.Id == productId);
-
+            var currentProduct = productService.Details(productId);
+            
             if (currentProduct == null)
             {
                 return NotFound();
             }
 
             return View(currentProduct);
-
         }
-
-
-        // GET: /Product/Create
+        
         [HttpGet]
         [Authorize]
+        [Route("Product/Create")]
         public IActionResult Create()
         {
             return View();
         }
-
-        // POST: /Product/Create
+        
         [HttpPost]
         [Authorize]
+        [Route("Product/Create")]
         public IActionResult Create(Product productToCreate)
         {
             if (ModelState.IsValid)
             {
-                var ownerId = db.Users
-                    .First(u => u.UserName == this.User.Identity.Name)
-                    .Id;
-
-                productToCreate.OwnerId = ownerId;
-
-                db.Products.Add(productToCreate);
-                db.SaveChanges();
+                productService.Create(productToCreate, this.User.Identity.Name);
 
                 return RedirectToAction("Index", "Home");
-
             }
 
             return View(productToCreate);
         }
-
-
-        // GET: /Product/List
+        
         [HttpGet]
         public IActionResult List()
         {
-
-            var allProducts = db
-                .Products
-                .Include(p => p.Owner)
-                .OrderByDescending(p => p.Id)
-                .ToList();
+            var allProducts = productService.List();
 
             return View(allProducts);
-
         }
 
         // GET: /Product/Edit/{id}
@@ -96,8 +79,7 @@
             {
                 return BadRequest();
             }
-
-
+            
             var loggedUserId = db.Users.First(u => u.Name == this.User.Identity.Name).Id;
 
             var productToEdit = db
@@ -117,7 +99,6 @@
             var model = new ProductViewModel(productToEdit.Id, productToEdit.Name, productToEdit.Description);
 
             return View(model);
-
         }
 
         // POST: /Product/Edit
@@ -173,7 +154,6 @@
             }
 
             return View(productToBeDeleted);
-
         }
 
         // POST: /Product/Delete/{id}
@@ -203,7 +183,6 @@
             db.SaveChanges();
 
             return RedirectToAction("Index", "Home");
-
         }
 
         private bool IsUserAuthorizedToEdit(Product productToEdit, string loggedUserId)
