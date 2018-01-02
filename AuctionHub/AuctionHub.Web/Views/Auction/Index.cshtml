@@ -1,0 +1,19 @@
+﻿@model System.Collections.Generic.List<AuctionHub.Web.Models.AuctionViewModels.IndexAuctionViewModel>
+
+@{
+    ViewBag.Title = "Index";
+   
+}
+
+<div class="parallax-container row-full">
+    <div class="parallax"><img src="~/images/stock-1863880_1920.jpg"></div>
+</div>
+<div class="carousel">
+   @foreach (var auction in Model)
+   {
+       <a class="carousel-item" href="#one!"><img src="@auction.PicturePath"></a>
+   }
+</div>
+<div class="parallax-container row-full">
+    <div class="parallax"><img src="~/images/tablet-1939255_1920.jpg"></div>
+</div>

@@ -1,6 +1,10 @@
 ﻿namespace AuctionHub.Web.Controllers
 {
+    using System.Linq;
     using Data;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
+    using Models.AuctionViewModels;
 
     public class AuctionController:BaseController
     {
@@ -10,6 +14,24 @@
             this.db = db;
         }
 
+        //GET Auction Index
+        public ActionResult Index()
+        {
+            var auctions = this.db.Auctions
+                               .Include(a => a.Product)
+                               .Take(5)
+                               .Select(a => new IndexAuctionViewModel()
+                               {
+                                   PicturePath = a.Product.Pictures.First().Path,
+                                   Duration = a.Duration,
+                                   LastBiddedPrice = a.Bids.Last().Value,
+                                   OwnerName = a.Product.Owner.Name,
+                                   ProductName = a.Product.Name
+                               })
+                               .ToList();
+
+            return this.View(auctions);
+        }
 
     }
 }

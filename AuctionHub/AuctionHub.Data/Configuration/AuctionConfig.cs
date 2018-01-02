@@ -21,7 +21,7 @@
             builder
                 .HasOne(a => a.Product)
                 .WithOne(p => p.Auction)
-                .HasForeignKey<Auction>(a => a.ProductId);
+                .HasForeignKey<Product>(p => p.AuctionId);
         }
     }
 }
