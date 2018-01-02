@@ -40,6 +40,8 @@
 
             services.AddAutoMapper();
 
+            services.AddDomainServices();
+
             services.AddTransient<ITownService, TownService>();
 
             services.AddMvc(options =>
