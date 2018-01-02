@@ -77,6 +77,8 @@
                 }
                 else
                 {
+                    //add error
+                    this.ShowNotification(NotificationType.Error, Messages.InvalidLoginAttempt);
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
                     return View(model);
                 }

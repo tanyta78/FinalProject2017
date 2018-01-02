@@ -3,17 +3,21 @@
     using Data;
     using Data.Models;
     using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
     using System.Linq;
+    using System.Threading.Tasks;
     using Web.Models;
 
     public class ProductController : Controller
     {
         private readonly AuctionHubDbContext db;
-        public ProductController(AuctionHubDbContext db)
+        private readonly UserManager<User> userManager;
+        public ProductController(AuctionHubDbContext db, UserManager<User> userManager)
         {
             this.db = db;
+            this.userManager = userManager;
         }
 
         // GET: /Product/Details/{id}
@@ -25,7 +29,7 @@
                 return BadRequest();
             }
 
-            var currentProduct = db
+            var currentProduct = this.db
                 .Products
                 .Include(p => p.Owner)
                 .FirstOrDefault(p => p.Id == productId);
@@ -51,18 +55,19 @@
         // POST: /Product/Create
         [HttpPost]
         [Authorize]
+        [ValidateAntiForgeryToken]
         public IActionResult Create(Product productToCreate)
         {
             if (ModelState.IsValid)
             {
-                var ownerId = db.Users
+                var ownerId = this.db.Users
                     .First(u => u.UserName == this.User.Identity.Name)
                     .Id;
 
                 productToCreate.OwnerId = ownerId;
 
-                db.Products.Add(productToCreate);
-                db.SaveChanges();
+                this.db.Products.Add(productToCreate);
+                this.db.SaveChanges();
 
                 return RedirectToAction("Index", "Home");
 
@@ -77,7 +82,7 @@
         public IActionResult List()
         {
 
-            var allProducts = db
+            var allProducts = this.db
                 .Products
                 .Include(p => p.Owner)
                 .OrderByDescending(p => p.Id)
@@ -90,19 +95,15 @@
         // GET: /Product/Edit/{id}
         [HttpGet]
         [Authorize]
-        public IActionResult Edit(int? productId)
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(int id)
         {
-            if (productId == null)
-            {
-                return BadRequest();
-            }
 
+            var loggedUserId = this.db.Users.First(u => u.Name == this.User.Identity.Name).Id;
 
-            var loggedUserId = db.Users.First(u => u.Name == this.User.Identity.Name).Id;
-
-            var productToEdit = db
+            var productToEdit = this.db
                 .Products
-                .FirstOrDefault(p => p.Id == productId);
+                .FirstOrDefault(p => p.Id == id);
 
             if (!IsUserAuthorizedToEdit(productToEdit, loggedUserId))
             {
@@ -128,15 +129,15 @@
             if (ModelState.IsValid)
             {
 
-                var productToEdit = db
+                var productToEdit = this.db
                     .Products
                     .First(p => p.Id == model.Id);
 
                 productToEdit.Name = model.Name;
                 productToEdit.Description = model.Description;
 
-                db.Entry(productToEdit).State = EntityState.Modified;
-                db.SaveChanges();
+                this.db.Entry(productToEdit).State = EntityState.Modified;
+                this.db.SaveChanges();
 
                 return RedirectToAction("Details/" + productToEdit.Id, "Product");
 
@@ -148,26 +149,20 @@
         // GET: /Product/Delete/{id}
         [HttpGet]
         [Authorize]
-        public IActionResult Delete(int? productId)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (productId == null)
-            {
-                return BadRequest();
-            }
+            User loggedUser = await this.userManager.FindByEmailAsync(User.Identity.Name);
 
-
-            var loggedUserId = db.Users.First(u => u.Name == this.User.Identity.Name).Id;
-
-            var productToBeDeleted = db
+            var productToBeDeleted = this.db
                 .Products
-                .FirstOrDefault(p => p.Id == productId);
+                .FirstOrDefault(p => p.Id == id);
 
             if (productToBeDeleted == null)
             {
                 return NotFound();
             }
 
-            if (!IsUserAuthorizedToEdit(productToBeDeleted, loggedUserId))
+            if (!IsUserAuthorizedToEdit(productToBeDeleted, loggedUser.Id))
             {
                 return Forbid();
             }
@@ -180,16 +175,11 @@
         [HttpPost]
         [Authorize]
         [ActionName("Delete")]
-        public IActionResult DeleteConfirmed(int? productId)
+        public IActionResult DeleteConfirmed(int id)
         {
-            if (productId == null)
-            {
-                return BadRequest();
-            }
-
-            var productToBeDeleted = db
+            var productToBeDeleted = this.db
                 .Products
-                .FirstOrDefault(p => p.Id == productId);
+                .FirstOrDefault(p => p.Id == id);
 
             if (productToBeDeleted == null)
             {
@@ -199,8 +189,8 @@
             // Here, before we delete the product, its pictures in the file system should be deleted as well!
             // DeleteProductPictures(productToBeDeleted);
 
-            db.Products.Remove(productToBeDeleted);
-            db.SaveChanges();
+            this.db.Products.Remove(productToBeDeleted);
+            this.db.SaveChanges();
 
             return RedirectToAction("Index", "Home");
 
