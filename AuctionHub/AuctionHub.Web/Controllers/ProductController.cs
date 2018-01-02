@@ -10,6 +10,12 @@
 
     public class ProductController : Controller
     {
+        private readonly AuctionHubDbContext db;
+        public ProductController(AuctionHubDbContext db)
+        {
+            this.db = db;
+        }
+
         // GET: /Product/Details/{id}
         [HttpGet]
         public IActionResult Details(int? productId)
@@ -19,20 +25,18 @@
                 return BadRequest();
             }
 
-            using (var db = new AuctionHubDbContext())
+            var currentProduct = db
+                .Products
+                .Include(p => p.Owner)
+                .FirstOrDefault(p => p.Id == productId);
+
+            if (currentProduct == null)
             {
-                var currentProduct = db
-                    .Products
-                    .Include(p => p.Owner)
-                    .FirstOrDefault(p => p.Id == productId);
-
-                if (currentProduct == null)
-                {
-                    return NotFound();
-                }
-
-                return View(currentProduct);
+                return NotFound();
             }
+
+            return View(currentProduct);
+
         }
 
 
@@ -51,19 +55,17 @@
         {
             if (ModelState.IsValid)
             {
-                using (var db = new AuctionHubDbContext())
-                {
-                    var ownerId = db.Users
-                        .First(u => u.UserName == this.User.Identity.Name)
-                        .Id;
+                var ownerId = db.Users
+                    .First(u => u.UserName == this.User.Identity.Name)
+                    .Id;
 
-                    productToCreate.OwnerId = ownerId;
+                productToCreate.OwnerId = ownerId;
 
-                    db.Products.Add(productToCreate);
-                    db.SaveChanges();
+                db.Products.Add(productToCreate);
+                db.SaveChanges();
 
-                    return RedirectToAction("Index", "Home");
-                }
+                return RedirectToAction("Index", "Home");
+
             }
 
             return View(productToCreate);
@@ -74,16 +76,15 @@
         [HttpGet]
         public IActionResult List()
         {
-            using (var db = new AuctionHubDbContext())
-            {
-                var allProducts = db
-                    .Products
-                    .Include(p => p.Owner)
-                    .OrderByDescending(p => p.Id)
-                    .ToList();
 
-                return View(allProducts);
-            }
+            var allProducts = db
+                .Products
+                .Include(p => p.Owner)
+                .OrderByDescending(p => p.Id)
+                .ToList();
+
+            return View(allProducts);
+
         }
 
         // GET: /Product/Edit/{id}
@@ -96,28 +97,27 @@
                 return BadRequest();
             }
 
-            using (var db = new AuctionHubDbContext())
+
+            var loggedUserId = db.Users.First(u => u.Name == this.User.Identity.Name).Id;
+
+            var productToEdit = db
+                .Products
+                .FirstOrDefault(p => p.Id == productId);
+
+            if (!IsUserAuthorizedToEdit(productToEdit, loggedUserId))
             {
-                var loggedUserId = db.Users.First(u => u.Name == this.User.Identity.Name).Id;
-
-                var productToEdit = db
-                    .Products
-                    .FirstOrDefault(p => p.Id == productId);
-
-                if (!IsUserAuthorizedToEdit(productToEdit, loggedUserId))
-                {
-                    return Forbid();
-                }
-
-                if (productToEdit == null)
-                {
-                    return NotFound();
-                }
-
-                var model = new ProductViewModel(productToEdit.Id, productToEdit.Name, productToEdit.Description);
-
-                return View(model);
+                return Forbid();
             }
+
+            if (productToEdit == null)
+            {
+                return NotFound();
+            }
+
+            var model = new ProductViewModel(productToEdit.Id, productToEdit.Name, productToEdit.Description);
+
+            return View(model);
+
         }
 
         // POST: /Product/Edit
@@ -127,20 +127,19 @@
         {
             if (ModelState.IsValid)
             {
-                using (var db = new AuctionHubDbContext())
-                {
-                    var productToEdit = db
-                        .Products
-                        .First(p => p.Id == model.Id);
-                    
-                    productToEdit.Name = model.Name;
-                    productToEdit.Description = model.Description;
 
-                    db.Entry(productToEdit).State = EntityState.Modified;
-                    db.SaveChanges();
+                var productToEdit = db
+                    .Products
+                    .First(p => p.Id == model.Id);
 
-                    return RedirectToAction("Details/" + productToEdit.Id, "Product");
-                }
+                productToEdit.Name = model.Name;
+                productToEdit.Description = model.Description;
+
+                db.Entry(productToEdit).State = EntityState.Modified;
+                db.SaveChanges();
+
+                return RedirectToAction("Details/" + productToEdit.Id, "Product");
+
             }
 
             return RedirectToAction("Index", "Home");
@@ -156,26 +155,25 @@
                 return BadRequest();
             }
 
-            using (var db = new AuctionHubDbContext())
+
+            var loggedUserId = db.Users.First(u => u.Name == this.User.Identity.Name).Id;
+
+            var productToBeDeleted = db
+                .Products
+                .FirstOrDefault(p => p.Id == productId);
+
+            if (productToBeDeleted == null)
             {
-                var loggedUserId = db.Users.First(u => u.Name == this.User.Identity.Name).Id;
-
-                var productToBeDeleted = db
-                    .Products
-                    .FirstOrDefault(p => p.Id == productId);
-
-                if (productToBeDeleted == null)
-                {
-                    return NotFound();
-                }
-
-                if (!IsUserAuthorizedToEdit(productToBeDeleted, loggedUserId))
-                {
-                    return Forbid();
-                }
-
-                return View(productToBeDeleted);
+                return NotFound();
             }
+
+            if (!IsUserAuthorizedToEdit(productToBeDeleted, loggedUserId))
+            {
+                return Forbid();
+            }
+
+            return View(productToBeDeleted);
+
         }
 
         // POST: /Product/Delete/{id}
@@ -189,25 +187,23 @@
                 return BadRequest();
             }
 
-            using (var db = new AuctionHubDbContext())
+            var productToBeDeleted = db
+                .Products
+                .FirstOrDefault(p => p.Id == productId);
+
+            if (productToBeDeleted == null)
             {
-                var productToBeDeleted = db
-                    .Products
-                    .FirstOrDefault(p => p.Id == productId);
-
-                if (productToBeDeleted == null)
-                {
-                    return NotFound();
-                }
-
-                // Here, before we delete the product, its pictures in the file system should be deleted as well!
-                // DeleteProductPictures(productToBeDeleted);
-
-                db.Products.Remove(productToBeDeleted);
-                db.SaveChanges();
-
-                return RedirectToAction("Index", "Home");
+                return NotFound();
             }
+
+            // Here, before we delete the product, its pictures in the file system should be deleted as well!
+            // DeleteProductPictures(productToBeDeleted);
+
+            db.Products.Remove(productToBeDeleted);
+            db.SaveChanges();
+
+            return RedirectToAction("Index", "Home");
+
         }
 
         private bool IsUserAuthorizedToEdit(Product productToEdit, string loggedUserId)
