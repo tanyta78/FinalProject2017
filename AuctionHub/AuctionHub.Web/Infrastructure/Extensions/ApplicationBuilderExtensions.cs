@@ -18,52 +18,66 @@
             {
                 serviceScope.ServiceProvider.GetService<AuctionHubDbContext>().Database.Migrate();
 
-                //var userManager = serviceScope.ServiceProvider.GetService<UserManager<User>>();
-                //var roleManager = serviceScope.ServiceProvider.GetService<RoleManager<IdentityRole>>();
-                //
-                //Task
-                //  .Run(async () =>
-                //  {
-                //      var adminName = WebConstants.AdministratorRole;
-                //
-                //      var roles = new[]
-                //      {
-                //          adminName
-                //      };
-                //
-                //      foreach (var role in roles)
-                //      {
-                //          var roleExists = await roleManager.RoleExistsAsync(role);
-                //
-                //          if (!roleExists)
-                //          {
-                //              await roleManager.CreateAsync(new IdentityRole
-                //              {
-                //                  Name = role
-                //              });
-                //          }
-                //      }
-                //
-                //      var adminEmail = "admin@mysite.com";
-                //
-                //      var adminUser = await userManager.FindByEmailAsync(adminEmail);
-                //
-                //      if (adminUser == null)
-                //      {
-                //          adminUser = new User
-                //          {
-                //              Email = adminEmail,
-                //              UserName = adminName,
-                //              Name = adminName,
-                //              Birthdate = DateTime.UtcNow
-                //          };
-                //
-                //          await userManager.CreateAsync(adminUser, "admin12");
-                //
-                //          await userManager.AddToRoleAsync(adminUser, adminName);
-                //      }
-                //  })
-                //  .Wait();
+                var userManager = serviceScope.ServiceProvider.GetService<UserManager<User>>();
+                var roleManager = serviceScope.ServiceProvider.GetService<RoleManager<IdentityRole>>();
+                
+                Task
+                  .Run(async () =>
+                  {
+                      var adminName = WebConstants.AdministratorRole;
+                
+                      var roles = new[]
+                      {
+                          adminName
+                      };
+                
+                      foreach (var role in roles)
+                      {
+                          var roleExists = await roleManager.RoleExistsAsync(role);
+                
+                          if (!roleExists)
+                          {
+                              await roleManager.CreateAsync(new IdentityRole
+                              {
+                                  Name = role
+                              });
+                          }
+                      }
+                
+                      var adminEmail = "admin@mysite.com";
+
+                      var adminGender = Gender.Male;
+
+                      var adminAddress = new Address
+                      {
+                          Country = "Bulgaria",
+                          Town = new Town
+                          {
+                              Name = "Sofia"
+                          },
+
+                      };
+                
+                      var adminUser = await userManager.FindByEmailAsync(adminEmail);
+                
+                      if (adminUser == null)
+                      {
+                          adminUser = new User
+                          {
+                              Email = adminEmail,
+                              UserName = adminName,
+                              Name = adminName,
+                              Birthdate = DateTime.UtcNow,
+                              Gender = adminGender,
+                              Address = adminAddress
+                          };
+                
+                          await userManager.CreateAsync(adminUser, "admin12");
+                
+                          await userManager.AddToRoleAsync(adminUser, adminName);
+                      }
+                  })
+                  .Wait();
             }
 
             return app;

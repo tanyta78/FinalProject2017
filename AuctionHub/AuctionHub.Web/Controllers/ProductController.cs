@@ -1,16 +1,12 @@
 ﻿namespace AuctionHub.Web.Controllers
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Net;
-    using System.Threading.Tasks;
-    using AuctionHub.Data;
-    using AuctionHub.Data.Models;
-    using AuctionHub.Web.Models;
+    using Data;
+    using Data.Models;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
+    using System.Linq;
+    using Web.Models;
 
     public class ProductController : Controller
     {

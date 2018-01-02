@@ -1,12 +1,8 @@
-﻿using AuctionHub.Common;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace AuctionHub.Web.Controllers
+﻿namespace AuctionHub.Web.Controllers
 {
+    using Common;
+    using Microsoft.AspNetCore.Mvc;
+
     public class BaseController : Controller
     {
         protected void ShowNotification(NotificationType type, string message)
