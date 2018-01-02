@@ -7,6 +7,7 @@
 @if (SignInManager.IsSignedIn(User))
 {
     <li><a asp-area="" asp-controller="Manage" asp-action="Index">Hello @UserManager.GetUserName(User)</a></li>
+    <li><a asp-area="" asp-controller="Product" asp-action="List">List of Products</a></li>
     <li><a asp-area="" asp-controller="Product" asp-action="Create">Create Product</a></li>
     <li>
         <form method="post" asp-action="Logout" asp-controller="Account">

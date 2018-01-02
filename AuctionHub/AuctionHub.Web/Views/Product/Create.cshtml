@@ -4,8 +4,7 @@
 
 @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
-
-    <input type="file" name="UploadFile" />
-    <input type="submit" name="submitID" id="submitID" value="Upload File" />
+    <input type="file" class="grey-text text-lighten" name="UploadFile" />
+    <input type="submit" class="btn btn-link navbar-btn navbar-link" name="submitID" id="submitID" value="Upload File" />
 }
 
