@@ -78,7 +78,7 @@
         // GET: /Product/Edit/{id}
         [HttpGet]
         [Authorize]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -107,7 +107,7 @@
                 Description = productToEdit.Description
             };
 
-            return View(model);
+            return View(productToEdit);
         }
 
         // POST: /Product/Edit
@@ -117,10 +117,7 @@
         {
             if (ModelState.IsValid)
             {
-
-                var productToEdit = this.db
-                    .Products
-                    .First(p => p.Id == model.Id);
+                var productToEdit = productService.GetProductById(model.Id);
 
                 productToEdit.Name = model.Name;
                 productToEdit.Description = model.Description;
@@ -129,7 +126,6 @@
                 this.db.SaveChanges();
 
                 return RedirectToAction("Details/" + productToEdit.Id, "Product");
-
             }
 
             return RedirectToAction(nameof(HomeController.Index), "Home");
