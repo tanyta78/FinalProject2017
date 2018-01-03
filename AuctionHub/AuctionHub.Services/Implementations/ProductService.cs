@@ -3,7 +3,6 @@
     using AuctionHub.Data;
     using AuctionHub.Data.Models;
     using AuctionHub.Services.Contracts;
-    using AuctionHub.Services.Models;
     using Microsoft.EntityFrameworkCore;
     using System.Collections.Generic;
     using System.Linq;
@@ -29,29 +28,20 @@
             db.Products.Add(product);
             db.SaveChanges();
         }
-
-        public Product Details(int? productId)
-        {
-            var currentProduct = this.db
-                .Products
-                .Include(p => p.Owner.Name)
-                .FirstOrDefault(p => p.Id == productId);
-
-            return currentProduct;
-        }
-
-        public Product Delete(int? id)
-        {
-            var productToBeDeleted = this.db
-                            .Products
-                            .FirstOrDefault(p => p.Id == id);
-
-            return productToBeDeleted;
-        }
-
+        
         public IEnumerable<Product> List() => this.db
                                     .Products
                                     .Include(p => p.Owner)
                                     .OrderByDescending(p => p.Id);
+        
+        public Product GetProductById(int? id)
+        {
+            var product = this.db
+                .Products
+                .Include(p => p.Owner)
+                .FirstOrDefault(p => p.Id == id);
+
+            return product;
+        }
     }
 }
