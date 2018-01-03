@@ -22,7 +22,7 @@
                     <td>
                         <label for="@product.Name"></label>
                         @*<li><a asp-area="" >Create Product</a></li>*@
-                        <button class="edit" asp-controller="Product" asp-action="Edit/@product.Id">Edit</button>
+                        <button class="edit" onclick="location.href='/Product/Edit/@product.Id';return false;">Edit</button>
                         <button class="delete" onclick="location.href='/Product/Delete/@product.Id';return false;">Delete</button>
                     </td>
                 </tr>
