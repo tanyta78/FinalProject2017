@@ -1,7 +1,33 @@
-﻿
+﻿@model List<AuctionHub.Data.Models.Product>
+
 @{
     ViewData["Title"] = "List";
 }
 
-<h2>List</h2>
+<h1>Product List</h1>
 
+<form asp-controller="Product" asp-action="Create" method="post">
+    <div>
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+            @foreach (var product in Model.ToList())
+            {
+                <tr>
+                    <td>@product.Name</td>
+                    <td>@product.Description</td>
+                    <td>
+                        <label for="@product.Name"></label>
+                        @*<li><a asp-area="" >Create Product</a></li>*@
+                        <button class="edit" asp-controller="Product" asp-action="Edit/@product.Id">Edit</button>
+                        <button class="delete" onclick="location.href='/delete/@product.Id';return false;">Delete</button>
+                    </td>
+                </tr>
+            }
+        </table>
+        </div>
+
+</form>

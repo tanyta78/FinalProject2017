@@ -70,8 +70,8 @@
         [HttpGet]
         public IActionResult List()
         {
-            var allProducts = productService.List();
-
+            //var allProducts = productService.List();
+            var allProducts = db.Products.ToList();
             return View(allProducts);
         }
 

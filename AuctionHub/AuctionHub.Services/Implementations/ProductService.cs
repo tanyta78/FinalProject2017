@@ -41,7 +41,7 @@
 
         public IEnumerable<Product> List() => this.db
                                     .Products
-                                    .Include(p => p.Owner.Name)
+                                    .Include(p => p.Owner)
                                     .OrderByDescending(p => p.Id);
     }
 }
