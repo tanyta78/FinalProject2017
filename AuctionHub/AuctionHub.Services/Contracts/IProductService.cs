@@ -10,5 +10,7 @@
         void Create(Product product, string userName);
 
         IEnumerable<Product> List();
+
+        Product Delete(int? id);
     }
 }

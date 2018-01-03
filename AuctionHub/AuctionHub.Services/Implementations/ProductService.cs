@@ -3,6 +3,7 @@
     using AuctionHub.Data;
     using AuctionHub.Data.Models;
     using AuctionHub.Services.Contracts;
+    using AuctionHub.Services.Models;
     using Microsoft.EntityFrameworkCore;
     using System.Collections.Generic;
     using System.Linq;
@@ -37,6 +38,15 @@
                 .FirstOrDefault(p => p.Id == productId);
 
             return currentProduct;
+        }
+
+        public Product Delete(int? id)
+        {
+            var productToBeDeleted = this.db
+                            .Products
+                            .FirstOrDefault(p => p.Id == id);
+
+            return productToBeDeleted;
         }
 
         public IEnumerable<Product> List() => this.db
