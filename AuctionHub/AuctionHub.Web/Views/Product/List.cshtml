@@ -1,4 +1,4 @@
-﻿@model List<AuctionHub.Data.Models.Product>
+﻿@model IEnumerable<AuctionHub.Data.Models.Product>
 
 @{
     ViewData["Title"] = "List";
@@ -14,7 +14,7 @@
                 <th>Description</th>
                 <th>Actions</th>
             </tr>
-            @foreach (var product in Model.ToList())
+            @foreach (var product in Model)
             {
                 <tr>
                     <td>@product.Name</td>
@@ -23,7 +23,7 @@
                         <label for="@product.Name"></label>
                         @*<li><a asp-area="" >Create Product</a></li>*@
                         <button class="edit" asp-controller="Product" asp-action="Edit/@product.Id">Edit</button>
-                        <button class="delete" onclick="location.href='/delete/@product.Id';return false;">Delete</button>
+                        <button class="delete" onclick="location.href='/Product/Delete/@product.Id';return false;">Delete</button>
                     </td>
                 </tr>
             }

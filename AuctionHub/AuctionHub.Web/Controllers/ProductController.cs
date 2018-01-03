@@ -26,14 +26,14 @@
         
         [HttpGet]
         [Route("Product/Details/{id}")]
-        public IActionResult Details(int? productId)
+        public IActionResult Details(int? id)
         {
-            if (productId == null)
+            if (id == null)
             {
                 return BadRequest();
             }
 
-            var currentProduct = productService.Details(productId);
+            var currentProduct = productService.Details(id);
 
             if (currentProduct == null)
             {
@@ -61,7 +61,7 @@
             {
                 productService.Create(productToCreate, this.User.Identity.Name);
 
-                return RedirectToAction(nameof(HomeController.Index));
+                return RedirectToAction(nameof(HomeController.Index), "Home");
             }
 
             return View(productToCreate);
@@ -70,8 +70,8 @@
         [HttpGet]
         public IActionResult List()
         {
-            //var allProducts = productService.List();
-            var allProducts = db.Products.ToList();
+            var allProducts = productService.List();
+
             return View(allProducts);
         }
 
@@ -125,7 +125,7 @@
 
             }
 
-            return RedirectToAction(nameof(HomeController.Index));
+            return RedirectToAction(nameof(HomeController.Index), "Home");
         }
 
         // GET: /Product/Delete/{id}
@@ -135,9 +135,7 @@
         {
             User loggedUser = await this.userManager.FindByEmailAsync(User.Identity.Name);
 
-            var productToBeDeleted = this.db
-                .Products
-                .FirstOrDefault(p => p.Id == id);
+            var productToBeDeleted = productService.Delete(id);
 
             if (productToBeDeleted == null)
             {
@@ -173,7 +171,7 @@
             this.db.Products.Remove(productToBeDeleted);
             this.db.SaveChanges();
             this.ShowNotification(NotificationType.Success, Messages.ProductDeleted);
-            return RedirectToAction(nameof(HomeController.Index));
+            return RedirectToAction(nameof(HomeController.Index), "Home");
         }
 
         private bool IsUserAuthorizedToEdit(Product productToEdit, string loggedUserId)
