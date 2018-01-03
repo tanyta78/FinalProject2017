@@ -33,7 +33,7 @@
                 return BadRequest();
             }
 
-            var currentProduct = productService.Details(id);
+            var currentProduct = productService.GetProductById(id);
 
             if (currentProduct == null)
             {
@@ -79,16 +79,18 @@
         [HttpGet]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int? id)
         {
+            if (id == null)
+            {
+                return BadRequest();
+            }
 
-            var loggedUserId = this.db.Users.First(u => u.Name == this.User.Identity.Name).Id;
+            var loggedUser = await this.userManager.FindByEmailAsync(User.Identity.Name);
 
-            var productToEdit = this.db
-                .Products
-                .FirstOrDefault(p => p.Id == id);
+            var productToEdit = productService.GetProductById(id);
 
-            if (!IsUserAuthorizedToEdit(productToEdit, loggedUserId))
+            if (!IsUserAuthorizedToEdit(productToEdit, loggedUser.Id))
             {
                 return Forbid();
             }
@@ -98,7 +100,12 @@
                 return NotFound();
             }
 
-            var model = new ProductViewModel(productToEdit.Id, productToEdit.Name, productToEdit.Description);
+            var model = new ProductViewModel()
+            {
+                Id = productToEdit.Id,
+                Name = productToEdit.Name,
+                Description = productToEdit.Description
+            };
 
             return View(model);
         }
@@ -131,11 +138,16 @@
         // GET: /Product/Delete/{id}
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int? id)
         {
+            if (id == null)
+            {
+                return BadRequest();
+            }
+
             User loggedUser = await this.userManager.FindByEmailAsync(User.Identity.Name);
 
-            var productToBeDeleted = productService.Delete(id);
+            var productToBeDeleted = productService.GetProductById(id);
 
             if (productToBeDeleted == null)
             {
