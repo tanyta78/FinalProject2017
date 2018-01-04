@@ -24,9 +24,9 @@
                         <th>@product.Description</th>
                         <th>
                             <label for="@product.Name"></label>
-                            @*<li><a asp-area="" >Create Product</a></li>*@
-                            <a asp-action="Edit" asp-route-id="@product.Id" class="btn btn-primary btn-sm">Edit</a>
-                            <button class="delete" onclick="location.href='/Product/Delete/@product.Id';return false;">Delete</button>
+                            <a asp-action="Edit" asp-route-id="@product.Id" class="btn waves-effect waves-yellow">Edit</a>
+                            <a asp-action="Delete" asp-route-id="@product.Id" class="btn waves-effect waves-red">Delete</a>
+                            <a asp-action="Details" asp-route-id="@product.Id" class="btn waves-effect waves-purple">Details</a>
                         </th>
                     </tr>
                  }

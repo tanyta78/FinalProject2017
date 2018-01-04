@@ -28,7 +28,11 @@
     <div>
         <div>
             @Html.ActionLink("Cancel", "Index", "Home", null, new { @class = "btn btn-default" })
-            <input type="submit" value="Create" class="btn btn-success" />
+            <button class="btn waves-effect waves-light" type="submit" name="action">
+                Create
+                <i class="material-icons right">send</i>
+            </button>
+
         </div>
     </div>
 </form>
