@@ -1,8 +1,8 @@
-﻿using AuctionHub.Data.Models;
-using Microsoft.AspNetCore.Http;
-
-namespace AuctionHub.Services.Contracts
+﻿namespace AuctionHub.Services.Contracts
 {
+    using Data.Models;
+    using Microsoft.AspNetCore.Http;
+
     public interface IPictureService
     {
         void AddPicture(FormCollection formCollection, int productId, Picture picture);

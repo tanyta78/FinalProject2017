@@ -1,9 +1,11 @@
 ﻿namespace AuctionHub.Services.Implementations
 {
-    using AuctionHub.Data;
-    using AuctionHub.Data.Models;
-    using AuctionHub.Services.Contracts;
+    using AutoMapper.QueryableExtensions;
+    using Data;
+    using Data.Models;
     using Microsoft.EntityFrameworkCore;
+    using Services.Contracts;
+    using Services.Models.Products;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -16,23 +18,28 @@
             this.db = db;
         }
 
-        public void Create(Product product, string userName)
+
+        public void Create(string name, string description, List<Picture> pictures, string ownerId)
         {
-            var ownerId = this.db
-                    .Users
-                    .First(u => u.UserName == userName)
-                    .Id;
+            var product = new Product
+            {
+                Name = name,
+                Description = description,
+                Pictures = pictures,
+                OwnerId = ownerId
+            };
 
-            product.OwnerId = ownerId;
+            this.db.Add(product);
 
-            db.Products.Add(product);
-            db.SaveChanges();
+            this.db.SaveChanges();
         }
         
-        public IEnumerable<Product> List() => this.db
-                                    .Products
-                                    .Include(p => p.Owner)
-                                    .OrderByDescending(p => p.Id);
+        public IEnumerable<ProductListingServiceModel> List() 
+            => this.db
+                  .Products
+                  .ProjectTo<ProductListingServiceModel>()
+                  .OrderByDescending(p => p.Id)
+                  .ToList();
         
         public Product GetProductById(int? id)
         {

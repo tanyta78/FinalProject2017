@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2010
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuctionHub.Web", "AuctionHub.Web\AuctionHub.Web.csproj", "{585482CF-0317-41FF-BE13-5F7A38BFBA36}"
 EndProject
@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuctionHub.Data", "AuctionH
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuctionHub.Common", "AuctionHub.Common\AuctionHub.Common.csproj", "{381A7119-16E7-49AA-849D-90659F400F57}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuctionHub.Services", "AuctionHub.Services\AuctionHub.Services.csproj", "{8F03090C-D651-4259-BB66-E76FA0AD1994}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuctionHub.Services", "AuctionHub.Services\AuctionHub.Services.csproj", "{8F03090C-D651-4259-BB66-E76FA0AD1994}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
