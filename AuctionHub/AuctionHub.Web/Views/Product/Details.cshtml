@@ -1,7 +1,25 @@
-﻿
+﻿@model Product
 @{
     ViewData["Title"] = "Details";
 }
 
-<h2>Details</h2>
+<h2>Product Details</h2>
+<form asp-controller="Product" asp-action="Details" method="post">
+    <div>
+        <div>
+            @Html.LabelFor(m => m.Name)
+        </div>
+        <div>
+            @Html.TextBoxFor(m => m.Name, new { @readonly = "readonly" })
+        </div>
+    </div>
+    <div>
+        @Html.LabelFor(m => m.Description)
+        <div>
+            @Html.TextAreaFor(m => m.Description, new { @readonly = "readonly" })
+        </div>
+    </div>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn waves-effect waves-yellow">Edit</a>
+    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn waves-effect waves-red">Delete</a>
+</form>
 

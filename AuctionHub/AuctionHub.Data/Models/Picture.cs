@@ -7,9 +7,11 @@
         public string Path { get; set; }
 
         public string AuthorId { get; set; }
+
         public User Author { get; set; }
 
         public int ProductId { get; set; }
+
         public Product Product { get; set; }
     }
 }

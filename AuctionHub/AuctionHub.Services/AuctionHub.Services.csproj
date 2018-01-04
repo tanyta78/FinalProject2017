@@ -5,6 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="6.2.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\AuctionHub.Common\AuctionHub.Common.csproj" />
     <ProjectReference Include="..\AuctionHub.Data\AuctionHub.Data.csproj" />
   </ItemGroup>

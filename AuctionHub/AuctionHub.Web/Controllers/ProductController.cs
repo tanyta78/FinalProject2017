@@ -1,16 +1,17 @@
 ﻿namespace AuctionHub.Web.Controllers
 {
-    using AuctionHub.Common;
-    using AuctionHub.Services.Contracts;
+    using Common;
     using Data;
     using Data.Models;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
+    using Services.Contracts;
     using System.Linq;
     using System.Threading.Tasks;
     using Web.Models;
+    using Web.Models.Product;
 
     public class ProductController : BaseController
     {
@@ -42,29 +43,28 @@
 
             return View(currentProduct);
         }
-        
+
         [HttpGet]
         [Authorize]
-        [Route("Product/Create")]
         public IActionResult Create()
-        {
-            return View();
-        }
+            => View();
         
         [HttpPost]
         [Authorize]
-        [ValidateAntiForgeryToken]
-        [Route("Product/Create")]
-        public IActionResult Create(Product productToCreate)
+        public IActionResult Create(ProductFormModel productToCreate)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                productService.Create(productToCreate, this.User.Identity.Name);
-
-                return RedirectToAction(nameof(HomeController.Index), "Home");
+                return View(productToCreate);
             }
 
-            return View(productToCreate);
+            this.productService.Create(
+                productToCreate.Name,
+                productToCreate.Description,
+                productToCreate.Pictures,
+                this.userManager.GetUserId(User));
+
+            return RedirectToAction(nameof(HomeController.Index), "Home");
         }
         
         [HttpGet]

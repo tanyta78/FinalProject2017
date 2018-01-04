@@ -1,13 +1,14 @@
 ﻿namespace AuctionHub.Services.Contracts
 {
-    using AuctionHub.Data.Models;
+    using Data.Models;
+    using Services.Models.Products;
     using System.Collections.Generic;
 
     public interface IProductService
     {
-        void Create(Product product, string userName);
+        void Create(string name, string description, List<Picture> pictures, string ownerId);
 
-        IEnumerable<Product> List();
+        IEnumerable<ProductListingServiceModel> List();
 
         Product GetProductById(int? id);
     }

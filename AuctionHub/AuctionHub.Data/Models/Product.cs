@@ -26,6 +26,7 @@
         public List<Picture> Pictures { get; set; } = new List<Picture>();
 
         public int? AuctionId { get; set; }
+
         public Auction Auction { get; set; }
     }
 }

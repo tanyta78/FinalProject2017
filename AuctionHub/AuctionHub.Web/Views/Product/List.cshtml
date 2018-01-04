@@ -1,4 +1,4 @@
-﻿@model IEnumerable<AuctionHub.Data.Models.Product>
+﻿@model IEnumerable<ProductListingServiceModel>
 
 @{
     ViewData["Title"] = "List";
@@ -8,25 +8,29 @@
 
 <form asp-controller="Product" asp-action="Create" method="post">
     <div>
-        <table>
-            <tr>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Actions</th>
-            </tr>
-            @foreach (var product in Model)
-            {
+        <table class="tabl table-hover table-bordered">
+            <thead>
                 <tr>
-                    <td>@product.Name</td>
-                    <td>@product.Description</td>
-                    <td>
-                        <label for="@product.Name"></label>
-                        @*<li><a asp-area="" >Create Product</a></li>*@
-                        <button class="edit" onclick="location.href='/Product/Edit/@product.Id';return false;">Edit</button>
-                        <button class="delete" onclick="location.href='/Product/Delete/@product.Id';return false;">Delete</button>
-                    </td>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Actions</th>
                 </tr>
-            }
+            </thead>
+            <tbody>
+                @foreach (var product in Model)
+                 {
+                    <tr>
+                        <th>@product.Name</th>
+                        <th>@product.Description</th>
+                        <th>
+                            <label for="@product.Name"></label>
+                            <a asp-action="Edit" asp-route-id="@product.Id" class="btn waves-effect waves-yellow">Edit</a>
+                            <a asp-action="Delete" asp-route-id="@product.Id" class="btn waves-effect waves-red">Delete</a>
+                            <a asp-action="Details" asp-route-id="@product.Id" class="btn waves-effect waves-purple">Details</a>
+                        </th>
+                    </tr>
+                 }
+            </tbody>
         </table>
         </div>
 
