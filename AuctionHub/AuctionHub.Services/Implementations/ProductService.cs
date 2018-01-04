@@ -28,20 +28,20 @@
             db.Products.Add(product);
             db.SaveChanges();
         }
-
-        public Product Details(int? productId)
-        {
-            var currentProduct = this.db
-                .Products
-                .Include(p => p.Owner.Name)
-                .FirstOrDefault(p => p.Id == productId);
-
-            return currentProduct;
-        }
-
+        
         public IEnumerable<Product> List() => this.db
                                     .Products
-                                    .Include(p => p.Owner.Name)
+                                    .Include(p => p.Owner)
                                     .OrderByDescending(p => p.Id);
+        
+        public Product GetProductById(int? id)
+        {
+            var product = this.db
+                .Products
+                .Include(p => p.Owner)
+                .FirstOrDefault(p => p.Id == id);
+
+            return product;
+        }
     }
 }

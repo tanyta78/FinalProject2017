@@ -26,14 +26,14 @@
         
         [HttpGet]
         [Route("Product/Details/{id}")]
-        public IActionResult Details(int? productId)
+        public IActionResult Details(int? id)
         {
-            if (productId == null)
+            if (id == null)
             {
                 return BadRequest();
             }
 
-            var currentProduct = productService.Details(productId);
+            var currentProduct = productService.GetProductById(id);
 
             if (currentProduct == null)
             {
@@ -61,7 +61,7 @@
             {
                 productService.Create(productToCreate, this.User.Identity.Name);
 
-                return RedirectToAction(nameof(HomeController.Index));
+                return RedirectToAction(nameof(HomeController.Index), "Home");
             }
 
             return View(productToCreate);
@@ -78,17 +78,19 @@
         // GET: /Product/Edit/{id}
         [HttpGet]
         [Authorize]
-        [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id)
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int? id)
         {
+            if (id == null)
+            {
+                return BadRequest();
+            }
 
-            var loggedUserId = this.db.Users.First(u => u.Name == this.User.Identity.Name).Id;
+            var loggedUser = await this.userManager.FindByEmailAsync(User.Identity.Name);
 
-            var productToEdit = this.db
-                .Products
-                .FirstOrDefault(p => p.Id == id);
+            var productToEdit = productService.GetProductById(id);
 
-            if (!IsUserAuthorizedToEdit(productToEdit, loggedUserId))
+            if (!IsUserAuthorizedToEdit(productToEdit, loggedUser.Id))
             {
                 return Forbid();
             }
@@ -98,9 +100,14 @@
                 return NotFound();
             }
 
-            var model = new ProductViewModel(productToEdit.Id, productToEdit.Name, productToEdit.Description);
+            var model = new ProductViewModel()
+            {
+                Id = productToEdit.Id,
+                Name = productToEdit.Name,
+                Description = productToEdit.Description
+            };
 
-            return View(model);
+            return View(productToEdit);
         }
 
         // POST: /Product/Edit
@@ -110,10 +117,7 @@
         {
             if (ModelState.IsValid)
             {
-
-                var productToEdit = this.db
-                    .Products
-                    .First(p => p.Id == model.Id);
+                var productToEdit = productService.GetProductById(model.Id);
 
                 productToEdit.Name = model.Name;
                 productToEdit.Description = model.Description;
@@ -122,22 +126,24 @@
                 this.db.SaveChanges();
 
                 return RedirectToAction("Details/" + productToEdit.Id, "Product");
-
             }
 
-            return RedirectToAction(nameof(HomeController.Index));
+            return RedirectToAction(nameof(HomeController.Index), "Home");
         }
 
         // GET: /Product/Delete/{id}
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int? id)
         {
+            if (id == null)
+            {
+                return BadRequest();
+            }
+
             User loggedUser = await this.userManager.FindByEmailAsync(User.Identity.Name);
 
-            var productToBeDeleted = this.db
-                .Products
-                .FirstOrDefault(p => p.Id == id);
+            var productToBeDeleted = productService.GetProductById(id);
 
             if (productToBeDeleted == null)
             {
@@ -173,7 +179,7 @@
             this.db.Products.Remove(productToBeDeleted);
             this.db.SaveChanges();
             this.ShowNotification(NotificationType.Success, Messages.ProductDeleted);
-            return RedirectToAction(nameof(HomeController.Index));
+            return RedirectToAction(nameof(HomeController.Index), "Home");
         }
 
         private bool IsUserAuthorizedToEdit(Product productToEdit, string loggedUserId)

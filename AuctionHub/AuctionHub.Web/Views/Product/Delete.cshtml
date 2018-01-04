@@ -4,6 +4,18 @@
 }
 <h2>Delete</h2>
 
-<form asp-action="Delete" method="post">
+<form asp-controller="Product" asp-action="Delete" method="post">
+    <div>
+        @Html.LabelFor(m => m.Name)
+        <div>
+            @Html.TextBoxFor(m => m.Name, new { @readonly = "readonly" })
+        </div>
+    </div>
+    <div>
+        @Html.LabelFor(m => m.Description)
+        <div>
+            @Html.TextAreaFor(m => m.Description, new { @readonly = "readonly"})
+        </div>
+    </div>
     <input type="submit" value="Delete"/>
 </form>

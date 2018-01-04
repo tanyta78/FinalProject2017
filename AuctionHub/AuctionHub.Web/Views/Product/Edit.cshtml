@@ -1,7 +1,20 @@
-﻿
+﻿@model Product
 @{
     ViewData["Title"] = "Edit";
 }
-
-<h2>Edit</h2>
-
+<h2>Edit Product</h2>
+<form asp-controller="Product" asp-action="Edit" method="post">
+    <div>
+        @Html.LabelFor(m => m.Name)
+        <div>
+            @Html.TextBoxFor(m => m.Name)
+        </div>
+    </div>
+    <div>
+        @Html.LabelFor(m => m.Description)
+        <div>
+            @Html.TextAreaFor(m => m.Description)
+        </div>
+    </div>
+    <input type="submit" value="Edit" />
+</form>

@@ -20,15 +20,18 @@
 
     <div>
         <div>
+            <input type="file" class="grey-text text-lighten" name="UploadPhoto" />
+            <input type="submit" class="btn btn-link navbar-btn navbar-link" name="submitID" id="submitID" value="Upload Photo" />
+        </div>
+    </div>
+
+    <div>
+        <div>
             @Html.ActionLink("Cancel", "Index", "Home", null, new { @class = "btn btn-default" })
             <input type="submit" value="Create" class="btn btn-success" />
         </div>
     </div>
 </form>
 
-@*<h5>Upload pictures:</h5>
 
-    <input type="file" class="grey-text text-lighten" name="UploadFile" />
-    <input type="submit" class="btn btn-link navbar-btn navbar-link" name="submitID" id="submitID" value="Upload File" />*@
-    }
 

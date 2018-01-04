@@ -5,10 +5,10 @@
 
     public interface IProductService
     {
-        Product Details(int? id);
-
         void Create(Product product, string userName);
 
         IEnumerable<Product> List();
+
+        Product GetProductById(int? id);
     }
 }
