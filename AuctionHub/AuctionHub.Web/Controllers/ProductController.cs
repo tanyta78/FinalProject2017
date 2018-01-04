@@ -10,7 +10,6 @@
     using Services.Contracts;
     using System.Linq;
     using System.Threading.Tasks;
-    using Web.Models;
     using Web.Models.Product;
 
     public class ProductController : BaseController
@@ -107,7 +106,7 @@
                 Description = productToEdit.Description
             };
 
-            return View(productToEdit);
+            return View(model);
         }
 
         // POST: /Product/Edit
