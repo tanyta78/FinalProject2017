@@ -1,0 +1,15 @@
+﻿@model Bid
+@{
+	ViewData["Title"] = "Bid";
+}
+
+<form asp-controller="Bid" asp-action="Bidding" method="post">
+	<div>
+		@Html.LabelFor<>(m => m.Value)
+		<div>
+			@Html.TextBoxFor(m => m.Value)
+		</div>
+	</div>
+	
+	<input class="btn waves-effect waves-red" type="submit" value="Delete"/>
+</form>
