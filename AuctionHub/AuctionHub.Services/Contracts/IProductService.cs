@@ -8,10 +8,14 @@
     {
         void Create(string name, string description, List<Picture> pictures, string ownerId);
 
+        void Edit(int id, string name, string description);
+
         IEnumerable<ProductListingServiceModel> List();
 
         Product GetProductById(int? id);
 
         bool IsProductExist(int id);
+
+        void Delete(int id);
     }
 }

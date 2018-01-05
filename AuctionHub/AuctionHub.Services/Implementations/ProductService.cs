@@ -17,8 +17,7 @@
         {
             this.db = db;
         }
-
-
+        
         public void Create(string name, string description, List<Picture> pictures, string ownerId)
         {
             var product = new Product
@@ -33,7 +32,28 @@
 
             this.db.SaveChanges();
         }
-        
+
+        public void Edit(int id, string name, string description)
+        {
+            var productToBeEdited = GetProductById(id);
+
+            productToBeEdited.Name = name;
+            productToBeEdited.Description = description;
+
+            this.db.Entry(productToBeEdited).State = EntityState.Modified;
+            this.db.SaveChanges();
+        }
+
+        public void Delete(int id)
+        {
+            var productToBeDeleted = GetProductById(id);
+
+            // Here, before we delete the product, its pictures in the file system should be deleted as well!
+
+            this.db.Products.Remove(productToBeDeleted);
+            this.db.SaveChanges();
+        }
+
         public IEnumerable<ProductListingServiceModel> List() 
             => this.db
                   .Products

@@ -116,18 +116,13 @@
         {
             if (ModelState.IsValid)
             {
-                var productToEdit = productService.GetProductById(model.Id);
+                this.productService
+                        .Edit(model.Id, model.Name, model.Description);
 
-                productToEdit.Name = model.Name;
-                productToEdit.Description = model.Description;
-
-                this.db.Entry(productToEdit).State = EntityState.Modified;
-                this.db.SaveChanges();
-
-                return RedirectToAction("Details/" + productToEdit.Id, "Product");
+                return RedirectToAction("Details/" + model.Id, "Product");
             }
 
-            return RedirectToAction(nameof(HomeController.Index), "Home");
+            return View(model);
         }
 
         // GET: /Product/Delete/{id}
@@ -154,7 +149,14 @@
                 return Forbid();
             }
 
-            return View(productToBeDeleted);
+            var model = new ProductViewModel()
+            {
+                Id = productToBeDeleted.Id,
+                Name = productToBeDeleted.Name,
+                Description = productToBeDeleted.Description
+            };
+
+            return View(model);
         }
 
         // POST: /Product/Delete/{id}
@@ -163,21 +165,17 @@
         [ActionName("Delete")]
         public IActionResult DeleteConfirmed(int id)
         {
-            var productToBeDeleted = this.db
-                .Products
-                .FirstOrDefault(p => p.Id == id);
+            var productToBeDeleted = productService.GetProductById(id);
 
             if (productToBeDeleted == null)
             {
                 return NotFound();
             }
 
-            // Here, before we delete the product, its pictures in the file system should be deleted as well!
-            // DeleteProductPictures(productToBeDeleted);
+            this.productService.Delete(id);
 
-            this.db.Products.Remove(productToBeDeleted);
-            this.db.SaveChanges();
             this.ShowNotification(NotificationType.Success, Messages.ProductDeleted);
+
             return RedirectToAction(nameof(HomeController.Index), "Home");
         }
 
