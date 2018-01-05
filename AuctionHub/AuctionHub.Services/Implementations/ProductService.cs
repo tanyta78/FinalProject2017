@@ -28,7 +28,7 @@
                 Pictures = pictures,
                 OwnerId = ownerId
             };
-
+            //this.db.Products.Add(product)?? i think this is correct
             this.db.Add(product);
 
             this.db.SaveChanges();
@@ -49,6 +49,11 @@
                 .FirstOrDefault(p => p.Id == id);
 
             return product;
+        }
+
+        public bool IsProductExist(int id)
+        {
+            return this.db.Products.Any(p => p.Id == id);
         }
     }
 }

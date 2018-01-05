@@ -29,4 +29,8 @@
     <Folder Include="Infrastructure\Mapping\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="Views\Auction\Create.cshtml" />
+  </ItemGroup>
+
 </Project>

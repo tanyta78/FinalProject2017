@@ -11,5 +11,7 @@
         IEnumerable<ProductListingServiceModel> List();
 
         Product GetProductById(int? id);
+
+        bool IsProductExist(int id);
     }
 }

@@ -1,5 +1,3 @@
-using System;
-
 namespace AuctionHub.Web.Models
 {
     public class ErrorViewModel
