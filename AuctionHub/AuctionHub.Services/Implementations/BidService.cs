@@ -1,11 +1,10 @@
-﻿using System.Linq;
-using AuctionHub.Data;
-using AuctionHub.Data.Models;
-using AuctionHub.Services.Contracts;
-using Microsoft.EntityFrameworkCore;
-
-namespace AuctionHub.Services.Implementations
+﻿namespace AuctionHub.Services.Implementations
 {
+    using System.Linq;
+    using Contracts;
+    using Data;
+    using Data.Models;
+
     public class BidService :  IBidService
     {
         private readonly AuctionHubDbContext db;

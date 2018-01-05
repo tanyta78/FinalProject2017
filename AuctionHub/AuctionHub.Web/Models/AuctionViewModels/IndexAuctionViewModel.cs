@@ -1,14 +1,14 @@
 ﻿namespace AuctionHub.Web.Models.AuctionViewModels
 {
     using System;
-    using System.Collections.Generic;
-    using Data.Models;
 
     public class IndexAuctionViewModel
     {
         public int Id { get; set; }
 
-        public DateTime Duration { get; set; }
+        public string Description { get; set; }
+
+        public DateTime EndDate { get; set; }
 
         public decimal LastBiddedPrice { get; set; }
 

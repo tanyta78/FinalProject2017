@@ -23,10 +23,12 @@
                                .Select(a => new IndexAuctionViewModel()
                                {
                                    PicturePath = a.Product.Pictures.First().Path,
-                                   Duration = a.Duration,
+                                   Description = a.Description,
+                                   EndDate = a.EndDate,
                                    LastBiddedPrice = a.Bids.Last().Value,
                                    OwnerName = a.Product.Owner.Name,
-                                   ProductName = a.Product.Name
+                                   ProductName = a.Product.Name,
+                                   Id = a.Id
                                })
                                .ToList();
 

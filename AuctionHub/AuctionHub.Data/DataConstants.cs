@@ -15,5 +15,9 @@
 
         public const int UserNameMinLength = 2;
         public const int UserNameMaxLength = 100;
+
+        public const int AuctionNameMinLength = 2;
+        public const int AuctionNameMaxLength = 30;
+        public const int AuctionToShow= 5;
     }
 }

@@ -1,13 +1,11 @@
-﻿using AuctionHub.Data;
-using AuctionHub.Data.Models;
-using AuctionHub.Services.Contracts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace AuctionHub.Services.Implementations
+﻿namespace AuctionHub.Services.Implementations
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using Contracts;
+    using Data;
+    using Data.Models;
+
     public class TownService : ITownService
     {
         private readonly AuctionHubDbContext db;

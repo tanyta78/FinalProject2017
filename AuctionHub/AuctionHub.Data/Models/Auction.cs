@@ -2,20 +2,31 @@
 {
     using System;
     using System.Collections.Generic;
-
+    using System.ComponentModel.DataAnnotations;
+    
     public class Auction
     {
+        [Key]
         public int Id { get; set; }
-        
-        public DateTime Duration { get; set; }
 
+        [Required]
+        [MinLength(DataConstants.AuctionNameMinLength)]
+        [MaxLength(DataConstants.AuctionNameMaxLength)]
+        public string Description { get; set; }
+
+        [Required]
+        [Range(typeof(decimal), "0", "5000")]
         public decimal Price { get; set; }
 
-        public DateTime Create { get; set; }
+        [Required]
+        [DataType(DataType.Date)]
+        [Display(Name = "Start Date")]
+        public DateTime StartDate{ get; set; }
 
-        public DateTime Open { get; set; }
-
-        public DateTime Close { get; set; }
+        [Required]
+        [DataType(DataType.Date)]
+        [Display(Name = "End Date")]
+        public DateTime EndDate { get; set; }
 
         public string LastBidderId { get; set; }
 
@@ -23,9 +34,9 @@
 
         public List<Bid> Bids { get; set; } = new List<Bid>();
 
-        public Category Category { get; set; }
-
         public int CategoryId { get; set; }
+
+        public Category Category { get; set; }
 
         public int ProductId { get; set; }
 

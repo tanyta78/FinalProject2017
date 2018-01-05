@@ -1,7 +1,7 @@
-﻿using AuctionHub.Data.Models;
-
-namespace AuctionHub.Services.Contracts
+﻿namespace AuctionHub.Services.Contracts
 {
+    using Data.Models;
+
     public interface IBidService
     {
         Bid GetBidById(int? id);

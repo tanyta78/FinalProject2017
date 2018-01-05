@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace AuctionHub.Web.Models.BidViewModels
+﻿namespace AuctionHub.Web.Models.BidViewModels
 {
+    using System;
+
     public class BidViewModel
     {
         public int Id { get; set; }
