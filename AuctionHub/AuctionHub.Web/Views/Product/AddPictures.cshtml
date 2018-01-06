@@ -1,10 +1,10 @@
 ﻿@model ProductFormModel
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Add Pictures";
 }
 
-<h2>Product Details</h2>
-<form asp-controller="Product" asp-action="Details" method="post">
+<h2>Add pictures to this product</h2>
+<form asp-controller="Product" asp-action="AddPicture" method="post" enctype="multipart/form-data">
     <div>
         <div>
             @Html.LabelFor(m => m.Name)
@@ -24,14 +24,17 @@
         @foreach (var picture in Model.Pictures)
         {
             <a target="_blank" href="@picture.Path">
-                <img src="@picture.Path" height="150"/>
+                <img src="@picture.Path" height="150" />
             </a>
             <a asp-controller="Product" asp-action="DeletePicture" asp-route-id="@picture.Id" class="btn waves-effect waves-yellow">Delete this Picture</a>
         }
     </div>
 
-    <a asp-action="AddPictures" asp-route-id="@Model.Id" class="btn waves-effect waves-yellow">Add Pictures</a>
-    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn waves-effect waves-yellow">Edit</a>
-    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn waves-effect waves-red">Delete</a>
+    <div>
+        <div>
+            <input type="file" class="grey-text text-lighten" name="files" multiple />
+            <input type="submit" asp-route-id="@Model.Id" class="btn btn-link navbar-btn navbar-link" name="files" id="submitID" value="Upload Photo" />
+        </div>
+    </div>
 </form>
 

@@ -9,6 +9,7 @@
         public const int ProductNameMaxLength = 30;
         public const int ProductDescriptionMinLength = 5;
         public const int ProductDescriptionMaxLength = 5000;
+        public const int PicturesPerProductMaxCount = 5;
 
         public const int TownNameMinLength = 2;
         public const int TownNameMaxLength = 50;
@@ -18,6 +19,6 @@
 
         public const int AuctionNameMinLength = 2;
         public const int AuctionNameMaxLength = 30;
-        public const int AuctionToShow= 5;
+        public const int AuctionToShow = 5;
     }
 }

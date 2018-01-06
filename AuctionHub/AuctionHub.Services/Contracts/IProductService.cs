@@ -3,15 +3,24 @@
     using Data.Models;
     using Services.Models.Products;
     using System.Collections.Generic;
+    using System.Threading.Tasks;
 
     public interface IProductService
     {
-        void Create(string name, string description, List<Picture> pictures, string ownerId);
+        Task CreateAsync(string name, string description, List<Picture> pictures, string ownerId);
 
-        IEnumerable<ProductListingServiceModel> List();
+        Task EditAsync(int id, string name, string description);
 
-        Product GetProductById(int? id);
+        Task DeleteAsync(int id);
+
+        Task<IEnumerable<ProductListingServiceModel>> ListAsync(string ownerId);
+
+        Task<ProductDetailsServiceModel> GetProductByIdAsync(int id);
 
         bool IsProductExist(int id);
+
+        int GetProductPicturesCount(int id);
+
+        List<Picture> GetProductPictures(int id);
     }
 }

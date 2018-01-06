@@ -7,6 +7,8 @@
 
     public class ProductFormModel
     {
+        public int Id { get; set; }
+
         [Required]
         [MinLength(DataConstants.ProductNameMinLength)]
         [MaxLength(DataConstants.ProductNameMaxLength)]
