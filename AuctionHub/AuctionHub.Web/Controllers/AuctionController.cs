@@ -1,5 +1,7 @@
 ﻿namespace AuctionHub.Web.Controllers
 {
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
     using System.Linq;
     using System.Threading.Tasks;
     using Data;
@@ -15,6 +17,7 @@
     {
         private readonly IAuctionService auctionService;
         private readonly IProductService productService;
+        private readonly ICategoryService categoryService;
         private readonly UserManager<User> userManager;
 
         public AuctionController()
@@ -22,11 +25,12 @@
             
         }
 
-        public AuctionController( IAuctionService auctionService, UserManager<User> userManager,IProductService productService)
+        public AuctionController( IAuctionService auctionService, UserManager<User> userManager,IProductService productService, ICategoryService categoryService)
         {
             this.auctionService = auctionService;
             this.userManager = userManager;
             this.productService = productService;
+            this.categoryService = categoryService;
         }
 
         //GET Auction Index
@@ -52,7 +56,7 @@
         //GET Auction/Create
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> Create()
+        public IActionResult Create()
             => View();
 
         //POST Auction/Create
@@ -67,8 +71,13 @@
             //Create(string description, decimal price, DateTime startDate, DateTime endDate, int categoryId, int productId)
             User loggedUser = await this.userManager.FindByEmailAsync(this.User.Identity.Name);
           
-           // var categoryForAuction = this.categoryService.GetCategoryById(auctionToCreate.CategoryId);
             
+            if (!this.categoryService.IsCategoryExist(auctionToCreate.CategoryId))
+            {
+                return this.BadRequest();
+            }
+
+            var categoryForAuction = this.categoryService.GetCategoryById(auctionToCreate.CategoryId);
 
             if (!this.productService.IsProductExist(auctionToCreate.ProductId))
             {
@@ -82,6 +91,10 @@
             //    return Forbid();
             //}
 
+            if (!IsValid(auctionToCreate))
+            {
+                return this.BadRequest();
+            }
 
             this.auctionService.Create(
                 auctionToCreate.Description,
@@ -91,9 +104,17 @@
                 auctionToCreate.CategoryId,
                 auctionToCreate.ProductId);
 
-            return RedirectToAction(nameof(HomeController.Index), "Home");
+            return RedirectToAction(nameof(AuctionController.Index), "Auction");
         }
 
-        
+        private static bool IsValid(object obj)
+        {
+            var validationContext = new ValidationContext(obj);
+            var validationResults = new List<ValidationResult>();
+
+            var isValid = Validator.TryValidateObject(obj, validationContext, validationResults, true);
+            return isValid;
+        }
+
     }
 }
