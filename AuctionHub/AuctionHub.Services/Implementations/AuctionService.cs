@@ -12,12 +12,22 @@
     {
         private AuctionHubDbContext db;
 
+        public AuctionService(AuctionHubDbContext db)
+        {
+            this.db = db;
+        }
+
         public bool IsAuctionExist(int id)
+        {
+            return this.db.Auctions.Any(a => a.Id == id);
+        }
+
+        public Auction GetAuctionById(int id)
         {
             throw new NotImplementedException();
         }
 
-        public Auction GetAuctionById(int id)
+        public IEnumerable<Auction> GetByCategory(string category)
         {
             throw new NotImplementedException();
         }
@@ -37,11 +47,18 @@
             this.db.Auctions.Add(auction);
 
             this.db.SaveChanges();
+
+            //make connection with category and product
+
         }
 
         public void Delete(int id)
         {
-            throw new NotImplementedException();
+            var auction = this.db.Auctions.FirstOrDefault(a => a.Id == id);
+
+            this.db.Auctions.Remove(auction);
+
+            this.db.SaveChanges();
         }
 
         public void Edit(int id, DateTime endDate)
@@ -57,9 +74,6 @@
             return auctionsToView;
         }
 
-        public IEnumerable<Auction> GetByCategory(string category)
-        {
-            throw new NotImplementedException();
-        }
+       
     }
 }

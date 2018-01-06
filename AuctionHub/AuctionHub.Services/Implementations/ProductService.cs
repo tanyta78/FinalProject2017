@@ -29,7 +29,7 @@
                 OwnerId = ownerId
             };
             //this.db.Products.Add(product)?? i think this is correct
-            this.db.Add(product);
+            this.db.Products.Add(product);
 
             this.db.SaveChanges();
         }

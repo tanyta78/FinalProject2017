@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace AuctionHub.Data.Models
+﻿namespace AuctionHub.Data.Models
 {
+    using System.Collections.Generic;
+
     public class Category
     {
         public int Id { get; set; }

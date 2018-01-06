@@ -45,6 +45,7 @@
             services.AddTransient<ITownService, TownService>();
             services.AddTransient<IProductService, ProductService>();
             services.AddTransient<IAuctionService, AuctionService>();
+            services.AddTransient<ICategoryService, CategoryService>();
 
             services.AddMvc(options =>
             {
