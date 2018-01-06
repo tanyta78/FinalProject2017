@@ -9,7 +9,10 @@
         public const int ProductNameMaxLength = 30;
         public const int ProductDescriptionMinLength = 5;
         public const int ProductDescriptionMaxLength = 5000;
+
         public const int PicturesPerProductMaxCount = 5;
+        public const int PictureMaxWidth = 800;
+        public const int PictureMaxHeight = 600;
 
         public const int TownNameMinLength = 2;
         public const int TownNameMaxLength = 50;

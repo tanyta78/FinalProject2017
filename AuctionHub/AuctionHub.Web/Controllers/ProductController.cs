@@ -11,6 +11,8 @@
     using Services.Contracts;
     using System;
     using System.Collections.Generic;
+    using System.Drawing;
+    using System.Drawing.Drawing2D;
     using System.IO;
     using System.Threading.Tasks;
     using Web.Models.Product;
@@ -25,10 +27,10 @@
         private readonly AuctionHubDbContext db;
         private readonly UserManager<User> userManager;
 
-        public ProductController(AuctionHubDbContext db, 
-            UserManager<User> userManager, 
-            IProductService productService, 
-            IPictureService pictureService, 
+        public ProductController(AuctionHubDbContext db,
+            UserManager<User> userManager,
+            IProductService productService,
+            IPictureService pictureService,
             IHostingEnvironment hostingEnvironment)
         {
             this.hostingEnvironment = hostingEnvironment;
@@ -75,7 +77,7 @@
             {
                 return View(productToCreate);
             }
-            
+
             await this.productService.CreateAsync(
                 productToCreate.Name,
                 productToCreate.Description,
@@ -189,7 +191,7 @@
             foreach (var picture in allPictures)
             {
                 var fileToBeDeleted = string.Concat(hostingEnvironment.WebRootPath, picture.Path);
-                
+
                 if (System.IO.File.Exists(fileToBeDeleted))
                 {
                     System.IO.File.Delete(fileToBeDeleted);
@@ -215,7 +217,7 @@
             var loggedUserId = this.userManager.GetUserId(User);
 
             var productToAddPictures = await this.productService.GetProductByIdAsync(id);
-            
+
             if (productToAddPictures == null)
             {
                 return NotFound();
@@ -225,7 +227,7 @@
             {
                 return Forbid();
             }
-            
+
             var model = new ProductFormModel
             {
                 Id = productToAddPictures.Id,
@@ -260,7 +262,7 @@
 
                 return RedirectToAction(nameof(ProductController.AddPictures), "Product");
             }
-            
+
             var uploadDirectory = Path.Combine(hostingEnvironment.WebRootPath, "images\\Products");
 
             foreach (var file in files)
@@ -273,7 +275,7 @@
 
                     return RedirectToAction(string.Concat(nameof(ProductController.AddPictures), "/", product.Id), "Product");
                 }
-                
+
                 var fullPath = Path.Combine(uploadDirectory, GetUniqueFileName(file.FileName));
 
                 var uniqueFileName = fullPath
@@ -281,11 +283,22 @@
 
                 var dbPath = $"/images/Products/{uniqueFileName}";
 
-                // Add the picture to filesystem
+                // Add the original picture to filesystem
                 using (var stream = new FileStream(fullPath, FileMode.Create))
                 {
                     file.CopyTo(stream);
                 }
+
+                // Resize the picture:
+                Image imgOriginal = Image.FromFile(fullPath);
+
+                Image resizedImg =
+                    ResizePicture(imgOriginal, PictureMaxWidth, PictureMaxHeight);
+                
+                imgOriginal.Dispose();
+
+                // Add the resized picture to filesystem
+                resizedImg.Save(fullPath);
 
                 // Add the current picture to database
                 pictureService.AddPicture(dbPath, id, authorId);
@@ -301,7 +314,7 @@
             var product = await this.productService.GetProductByPictureId(id);
 
             var authorId = this.userManager.GetUserId(User);
-            
+
             if (!IsUserAuthorizedToEdit(product.OwnerId, authorId))
             {
                 return Forbid();
@@ -341,6 +354,35 @@
                 default:
                     return false;
             }
+        }
+
+        private Image ResizePicture(Image imgOriginal, int pictureMaxWidth, int pictureMaxHeight)
+        {
+            int width;
+            int height;
+
+            if (imgOriginal.Width > imgOriginal.Height)
+            {
+                width = pictureMaxWidth;
+                height = Convert.ToInt32(imgOriginal.Height * pictureMaxHeight / (double)imgOriginal.Width);
+            }
+            else
+            {
+                width = Convert.ToInt32(imgOriginal.Width * pictureMaxWidth / (double)imgOriginal.Height);
+                height = pictureMaxHeight;
+            }
+
+            var resizedImg = new Bitmap(width, height);
+
+            using (var graphics = Graphics.FromImage(resizedImg))
+            {
+                graphics.CompositingQuality = CompositingQuality.HighSpeed;
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphics.CompositingMode = CompositingMode.SourceCopy;
+                graphics.DrawImage(imgOriginal, 0, 0, width, height);
+            }
+
+            return resizedImg;
         }
 
         private string GetUniqueFileName(string fileName)
