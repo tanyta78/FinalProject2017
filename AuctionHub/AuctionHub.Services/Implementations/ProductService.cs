@@ -81,6 +81,18 @@
                 .ProjectTo<ProductDetailsServiceModel>()
                 .FirstOrDefaultAsync();
 
+        public async Task<ProductDetailsServiceModel> GetProductByPictureId(int pictureId)
+        {
+            var product = await this.db
+                .Products
+                .Where(p => p.Pictures
+                    .Any(pic => pic.Id == pictureId))
+                .ProjectTo<ProductDetailsServiceModel>()
+                .FirstOrDefaultAsync();
+
+            return product;
+        }
+
         public bool IsProductExist(int id)
         {
             return this.db.Products.Any(p => p.Id == id);

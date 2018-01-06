@@ -1,15 +1,15 @@
 ﻿namespace AuctionHub.Web.Controllers
 {
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-    using System.Linq;
-    using System.Threading.Tasks;
     using Data.Models;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Models.AuctionViewModels;
     using Services.Contracts;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+    using System.Linq;
+    using System.Threading.Tasks;
 
     public class AuctionController : BaseController
     {
@@ -33,7 +33,7 @@
 
         //GET Auction Index
         [HttpGet]
-        public async Task<ActionResult> Index()
+        public IActionResult Index()
         {
             var auctions = this.auctionService.IndexAuctionsList()
                                .Select(a => new IndexAuctionViewModel()
@@ -82,19 +82,19 @@
                 RedirectToAction(nameof(ProductController.List), "Product");
             }
 
-            var productForAuction = this.productService.GetProductByIdAsync(auctionToCreate.ProductId);
+            var productForAuction = await this.productService.GetProductByIdAsync(auctionToCreate.ProductId);
 
-            //if (productForAuction.OwnerId != loggedUser.Id)
-            //{
-            //    return Forbid();
-            //}
+            if (productForAuction.OwnerId != loggedUser.Id)
+            {
+                return Forbid();
+            }
 
             if (!IsValid(auctionToCreate))
             {
                 return this.BadRequest();
             }
 
-            this.auctionService.Create(
+             await this.auctionService.Create(
                 auctionToCreate.Description,
                 auctionToCreate.Price,
                 auctionToCreate.StartDate,

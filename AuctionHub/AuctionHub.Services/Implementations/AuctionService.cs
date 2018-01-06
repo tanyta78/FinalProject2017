@@ -1,39 +1,40 @@
 ﻿namespace AuctionHub.Services.Implementations
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
+    using AutoMapper.QueryableExtensions;
     using Contracts;
     using Data;
     using Data.Models;
     using Microsoft.EntityFrameworkCore;
+    using Services.Models.Auctions;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
 
     public class AuctionService : IAuctionService
     {
-        private AuctionHubDbContext db;
+        private readonly AuctionHubDbContext db;
 
         public AuctionService(AuctionHubDbContext db)
         {
             this.db = db;
         }
+        
+        public async Task<AuctionDetailsServiceModel> GetAuctionByIdAsync(int id)
+            => await this.db
+                 .Auctions
+                 .Where(a => a.Id == id)
+                 .ProjectTo<AuctionDetailsServiceModel>()
+                 .FirstOrDefaultAsync();
 
-        public bool IsAuctionExist(int id)
-        {
-            return this.db.Auctions.Any(a => a.Id == id);
-        }
+        public async Task<IEnumerable<AuctionDetailsServiceModel>> GetByCategoryNameAsync(string categoryName)
+             => await this.db
+                .Auctions
+                .Where(a => a.Category.Name == categoryName)
+                .ProjectTo<AuctionDetailsServiceModel>()
+                .ToListAsync();
 
-        public Auction GetAuctionById(int id)
-        {
-           return this.db.Auctions.FirstOrDefault(a => a.Id == id);
-        }
-
-        public IEnumerable<Auction> GetByCategory(string category)
-        {
-            var auctions = this.db.Categories.FirstOrDefault(c => c.Name == category).Auctions;
-            return auctions;
-        }
-
-        public void Create(string description, decimal price, DateTime startDate, DateTime endDate, int categoryId, int productId)
+        public async Task Create(string description, decimal price, DateTime startDate, DateTime endDate, int categoryId, int productId)
         {
            var auction = new Auction()
            {
@@ -48,20 +49,20 @@
 
             this.db.Auctions.Add(auction);
 
-            this.db.SaveChanges();
+            await this.db.SaveChangesAsync();
 
             //make connection with category and product
             var category = this.db.Categories.FindAsync(categoryId).Result;
             var product = this.db.Products.FindAsync(productId).Result;
             category.Auctions.Add(auction);
             product.Auction = auction;
-            this.db.SaveChanges();
+            await this.db.SaveChangesAsync();
 
         }
 
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
-            var auction = this.GetAuctionById(id);
+            var auction = await this.db.Auctions.FindAsync(id);
 
             //delete connection with product
             var auctionProductId = auction.ProductId;
@@ -75,37 +76,40 @@
             // delete connection with bidding??? NOT FINNISHED
 
            var bidsList= this.db.Bids.Where(b => b.AuctionId == id);
-
-
+            
             this.db.SaveChanges();
-
-
-
+            
             // auction.IsActive = false;
             this.db.Auctions.Remove(auction);
 
-            this.db.SaveChanges();
+            await this.db.SaveChangesAsync();
         }
 
-        public void Edit(int id, DateTime endDate)
+        public async Task Edit(int id, DateTime endDate)
         {
-            var auction = this.GetAuctionById(id);
-            if (endDate< DateTime.Now)
+            var auction = await this.GetAuctionByIdAsync(id);
+
+            if (endDate < DateTime.UtcNow)
             {
                 return;
             }
             auction.EndDate = endDate;
-            this.db.SaveChanges();
+
+            await this.db.SaveChangesAsync();
         }
 
         public IEnumerable<Auction> IndexAuctionsList()
         {
-            IEnumerable<Auction> auctionsToView = this.db.Auctions
+            var auctionsToView = this.db.Auctions
                                                       .Include(a => a.Product)
                                                       .Take(DataConstants.AuctionToShow);
+                                                      //.ToListAsync();
             return auctionsToView;
         }
 
-       
+        public bool IsAuctionExist(int id)
+        {
+            return this.db.Auctions.Any(a => a.Id == id);
+        }
     }
 }

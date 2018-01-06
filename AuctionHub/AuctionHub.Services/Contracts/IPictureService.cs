@@ -3,6 +3,7 @@
     using Data.Models;
     using Services.Models.Products;
     using System.Collections.Generic;
+    using System.Threading.Tasks;
 
     public interface IPictureService
     {
@@ -15,7 +16,5 @@
         void DeleteAllPicturesByProductId(int productId);
 
         List<Picture> GetPicturesByProductId(int id);
-
-        ProductDetailsServiceModel GetProductByPictureId(int pictureId);
     }
 }

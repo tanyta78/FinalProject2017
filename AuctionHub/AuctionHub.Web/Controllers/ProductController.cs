@@ -298,7 +298,7 @@
         [Authorize]
         public async Task<IActionResult> DeletePicture(int id)
         {
-            var product = this.pictureService.GetProductByPictureId(id);
+            var product = await this.productService.GetProductByPictureId(id);
 
             var authorId = this.userManager.GetUserId(User);
             

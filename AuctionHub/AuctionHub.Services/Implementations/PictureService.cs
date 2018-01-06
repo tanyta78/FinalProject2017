@@ -1,13 +1,14 @@
 ﻿namespace AuctionHub.Services.Implementations
 {
-    using AuctionHub.Data;
-    using AuctionHub.Data.Models;
-    using AuctionHub.Services.Contracts;
-    using AuctionHub.Services.Models.Products;
     using AutoMapper.QueryableExtensions;
+    using Data;
+    using Data.Models;
     using Microsoft.EntityFrameworkCore;
+    using Services.Contracts;
+    using Services.Models.Products;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
 
     public class PictureService : IPictureService
     {
@@ -65,18 +66,6 @@
                 .ToList();
 
             return allPictures;
-        }
-
-        public ProductDetailsServiceModel GetProductByPictureId(int pictureId)
-        {
-            var product = this.db
-                .Products
-                .Where(p => p.Pictures
-                    .Any(pic => pic.Id == pictureId))
-                .ProjectTo<ProductDetailsServiceModel>()
-                .FirstOrDefault();
-
-            return product;
         }
     }
 }

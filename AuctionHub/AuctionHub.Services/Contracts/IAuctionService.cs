@@ -1,24 +1,26 @@
 ﻿namespace AuctionHub.Services.Contracts
 {
+    using Data.Models;
+    using Services.Models.Auctions;
     using System;
     using System.Collections.Generic;
-    using Data.Models;
+    using System.Threading.Tasks;
 
     public interface IAuctionService
     {
         bool IsAuctionExist(int id);
 
-        Auction GetAuctionById(int id);
+        Task<AuctionDetailsServiceModel> GetAuctionByIdAsync(int id);
 
-        void Create(string description, decimal price, DateTime startDate, DateTime endDate, int categoryId, int productId);
+        Task Create(string description, decimal price, DateTime startDate, DateTime endDate, int categoryId, int productId);
 
-        void Delete(int id);
+        Task Delete(int id);
 
-        void Edit(int id, DateTime endDate);
+        Task Edit(int id, DateTime endDate);
 
         IEnumerable<Auction> IndexAuctionsList();
 
-        IEnumerable<Auction> GetByCategory(string category);
+        Task<IEnumerable<AuctionDetailsServiceModel>> GetByCategoryNameAsync(string categoryName);
 
     }
 }
