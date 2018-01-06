@@ -16,7 +16,7 @@
         }
 
         public bool IsCategoryExist(int id)
-        {
+        { 
             return this.db.Categories.Any(c => c.Id == id);
         }
 
@@ -26,9 +26,21 @@
             return categoryById;
         }
 
+        public Category GetCategoryByName(string name)
+        {
+            var categoryByName = this.db.Categories.FirstOrDefault(c => c.Name == name);
+            return categoryByName;
+        }
+
         public void Create(string name)
         {
-            throw new System.NotImplementedException();
+            var category = new Category()
+            {
+                Name = name,
+                Auctions = new List<Auction>()
+            };
+            this.db.Categories.Add(category);
+            this.db.SaveChanges();
         }
 
         public void Delete(int id)
@@ -43,7 +55,7 @@
 
         public IEnumerable<Category> CategoryList()
         {
-            throw new System.NotImplementedException();
+            return this.db.Categories.ToList();
         }
     }
 }
