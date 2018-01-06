@@ -8,6 +8,7 @@
     using Services.Models.Products;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
 
     public class ProductService : IProductService
     {
@@ -18,7 +19,7 @@
             this.db = db;
         }
         
-        public void Create(string name, string description, List<Picture> pictures, string ownerId)
+        public async Task CreateAsync(string name, string description, List<Picture> pictures, string ownerId)
         {
             var product = new Product
             {
@@ -30,47 +31,55 @@
 
             this.db.Products.Add(product);
 
-            this.db.SaveChanges();
+            await this.db.SaveChangesAsync();
         }
 
-        public void Edit(int id, string name, string description)
+        public async Task EditAsync(int id, string name, string description)
         {
-            var productToBeEdited = GetProductById(id);
+            var productToBeEdited = await this.db
+                .Products
+                .FindAsync(id);
+
+            if (productToBeEdited == null)
+            {
+                return;
+            }
 
             productToBeEdited.Name = name;
             productToBeEdited.Description = description;
 
             this.db.Entry(productToBeEdited).State = EntityState.Modified;
-            this.db.SaveChanges();
+            await this.db.SaveChangesAsync();
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            var productToBeDeleted = GetProductById(id);
+            var productToBeDeleted = await this.db.Products.FindAsync(id);
+            if (productToBeDeleted == null)
+            {
+                return;
+            }
 
             // Here, before we delete the product, its pictures in the file system should be deleted as well!
 
             this.db.Products.Remove(productToBeDeleted);
-            this.db.SaveChanges();
+            await this.db.SaveChangesAsync();
         }
 
-        public IEnumerable<ProductListingServiceModel> List() 
-            => this.db
+        public async Task<IEnumerable<ProductListingServiceModel>> ListAsync(string ownerId) 
+            => await this.db
                   .Products
+                  .Where(p => p.OwnerId == ownerId)
                   .ProjectTo<ProductListingServiceModel>()
                   .OrderByDescending(p => p.Id)
-                  .ToList();
+                  .ToListAsync();
         
-        public Product GetProductById(int? id)
-        {
-            var product = this.db
+        public Task<ProductDetailsServiceModel> GetProductByIdAsync(int id)
+            => this.db
                 .Products
-                .Include(p => p.Owner)
-                .Include(p => p.Pictures)
-                .FirstOrDefault(p => p.Id == id);
-
-            return product;
-        }
+                .Where(p => p.Id == id)
+                .ProjectTo<ProductDetailsServiceModel>()
+                .FirstOrDefaultAsync();
 
         public bool IsProductExist(int id)
         {

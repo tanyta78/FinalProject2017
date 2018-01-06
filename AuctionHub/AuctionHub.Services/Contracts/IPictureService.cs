@@ -1,6 +1,7 @@
 ﻿namespace AuctionHub.Services.Contracts
 {
     using Data.Models;
+    using Services.Models.Products;
     using System.Collections.Generic;
 
     public interface IPictureService
@@ -15,6 +16,6 @@
 
         List<Picture> GetPicturesByProductId(int id);
 
-        Product GetProductByPictureId(int? pictureId);
+        ProductDetailsServiceModel GetProductByPictureId(int pictureId);
     }
 }

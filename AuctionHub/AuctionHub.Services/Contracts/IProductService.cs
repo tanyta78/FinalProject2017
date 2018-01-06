@@ -3,18 +3,19 @@
     using Data.Models;
     using Services.Models.Products;
     using System.Collections.Generic;
+    using System.Threading.Tasks;
 
     public interface IProductService
     {
-        void Create(string name, string description, List<Picture> pictures, string ownerId);
+        Task CreateAsync(string name, string description, List<Picture> pictures, string ownerId);
 
-        void Edit(int id, string name, string description);
+        Task EditAsync(int id, string name, string description);
 
-        void Delete(int id);
+        Task DeleteAsync(int id);
 
-        IEnumerable<ProductListingServiceModel> List();
+        Task<IEnumerable<ProductListingServiceModel>> ListAsync(string ownerId);
 
-        Product GetProductById(int? id);
+        Task<ProductDetailsServiceModel> GetProductByIdAsync(int id);
 
         bool IsProductExist(int id);
 

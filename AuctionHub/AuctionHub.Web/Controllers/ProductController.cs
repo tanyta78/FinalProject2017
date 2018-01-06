@@ -40,9 +40,9 @@
 
         // GET: /Product/Details/{id}
         [HttpGet]
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int id)
         {
-            var currentProduct = productService.GetProductById(id);
+            var currentProduct = await productService.GetProductByIdAsync(id);
 
             if (currentProduct == null)
             {
@@ -76,7 +76,7 @@
                 return View(productToCreate);
             }
 
-            this.productService.Create(
+            this.productService.CreateAsync(
                 productToCreate.Name,
                 productToCreate.Description,
                 productToCreate.Pictures,
@@ -87,9 +87,11 @@
 
         // GET: /Product/List
         [HttpGet]
-        public IActionResult List()
+        public async Task<IActionResult> List()
         {
-            var allProducts = productService.List();
+            var ownerId = this.userManager.GetUserId(User);
+
+            var allProducts = await productService.ListAsync(ownerId);
 
             return View(allProducts);
         }
@@ -97,13 +99,13 @@
         // GET: /Product/Edit/{id}
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            var loggedUser = await this.userManager.FindByEmailAsync(User.Identity.Name);
+            var loggedUserId = this.userManager.GetUserId(User);
 
-            var productToEdit = productService.GetProductById(id);
+            var productToEdit = await this.productService.GetProductByIdAsync(id);
 
-            if (!IsUserAuthorizedToEdit(productToEdit, loggedUser.Id))
+            if (!IsUserAuthorizedToEdit(productToEdit.OwnerId, loggedUserId))
             {
                 return Forbid();
             }
@@ -115,7 +117,6 @@
 
             var model = new ProductViewModel()
             {
-                Id = productToEdit.Id,
                 Name = productToEdit.Name,
                 Description = productToEdit.Description
             };
@@ -126,15 +127,15 @@
         // POST: /Product/Edit
         [HttpPost]
         [Authorize]
-        public IActionResult Edit(ProductViewModel model)
+        public async Task<IActionResult> Edit(ProductViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-            this.productService
-                        .Edit(model.Id, model.Name, model.Description);
+            await this.productService
+                        .EditAsync(model.Id, model.Name, model.Description);
 
             return RedirectToAction("Details/" + model.Id, "Product");
 
@@ -143,25 +144,25 @@
         // GET: /Product/Delete/{id}
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int id)
         {
-            User loggedUser = await this.userManager.FindByEmailAsync(User.Identity.Name);
+            var loggedUserId = this.userManager.GetUserId(User);
 
-            var productToBeDeleted = productService.GetProductById(id);
+            var productToBeDeleted = await this.productService.GetProductByIdAsync(id);
 
             if (productToBeDeleted == null)
             {
                 return NotFound();
             }
 
-            if (!IsUserAuthorizedToEdit(productToBeDeleted, loggedUser.Id))
+            if (!IsUserAuthorizedToEdit(productToBeDeleted.OwnerId, loggedUserId))
             {
                 return Forbid();
             }
 
             var model = new ProductViewModel()
             {
-                Id = productToBeDeleted.Id,
+                //Id = productToBeDeleted.Id,
                 Name = productToBeDeleted.Name,
                 Description = productToBeDeleted.Description
             };
@@ -173,9 +174,9 @@
         [HttpPost]
         [Authorize]
         [ActionName("Delete")]
-        public IActionResult DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var productToBeDeleted = productService.GetProductById(id);
+            var productToBeDeleted = await this.productService.GetProductByIdAsync(id);
 
             if (productToBeDeleted == null)
             {
@@ -199,7 +200,7 @@
             this.pictureService.DeleteAllPicturesByProductId(id);
 
             // Delete product from database
-            this.productService.Delete(id);
+            await this.productService.DeleteAsync(id);
 
             this.ShowNotification(NotificationType.Success, Messages.ProductDeleted);
 
@@ -209,17 +210,18 @@
         // GET: /Product/AddPictures/{productId}
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> AddPictures(int? id)
+        public async Task<IActionResult> AddPictures(int id)
         {
-            var loggedUser = await this.userManager.FindByEmailAsync(User.Identity.Name);
-            var productToAddPictures = this.productService.GetProductById(id);
+            var loggedUserId = this.userManager.GetUserId(User);
+
+            var productToAddPictures = await this.productService.GetProductByIdAsync(id);
             
             if (productToAddPictures == null)
             {
                 return NotFound();
             }
 
-            if (!IsUserAuthorizedToEdit(productToAddPictures, loggedUser.Id))
+            if (!IsUserAuthorizedToEdit(productToAddPictures.OwnerId, loggedUserId))
             {
                 return Forbid();
             }
@@ -240,10 +242,11 @@
         [Authorize]
         public async Task<IActionResult> AddPictures(List<IFormFile> files, int id)
         {
-            var author = await this.userManager.FindByEmailAsync(User.Identity.Name);
-            var product = productService.GetProductById(id);
+            var authorId = this.userManager.GetUserId(User);
 
-            if (!IsUserAuthorizedToEdit(product, author.Id))
+            var product = await productService.GetProductByIdAsync(id);
+
+            if (!IsUserAuthorizedToEdit(product.OwnerId, authorId))
             {
                 return Forbid();
             }
@@ -285,7 +288,7 @@
                 }
 
                 // Add the current picture to database
-                pictureService.AddPicture(dbPath, id, author.Id);
+                pictureService.AddPicture(dbPath, id, authorId);
             }
 
             return RedirectToAction(string.Concat(nameof(ProductController.AddPictures), "/", product.Id), "Product");
@@ -293,12 +296,13 @@
 
         // POST: /Product/DeletePicture/{id}
         [Authorize]
-        public async Task<IActionResult> DeletePicture(int? id)
+        public async Task<IActionResult> DeletePicture(int id)
         {
             var product = this.pictureService.GetProductByPictureId(id);
-            var author = await this.userManager.FindByEmailAsync(User.Identity.Name);
+
+            var authorId = this.userManager.GetUserId(User);
             
-            if (!IsUserAuthorizedToEdit(product, author.Id))
+            if (!IsUserAuthorizedToEdit(product.OwnerId, authorId))
             {
                 return Forbid();
             }
@@ -350,10 +354,10 @@
             return uniqueFileName;
         }
 
-        private bool IsUserAuthorizedToEdit(Product productToEdit, string loggedUserId)
+        private bool IsUserAuthorizedToEdit(string productOwnerId, string loggedUserId)
         {
             bool isAdmin = this.User.IsInRole("Administrator");
-            bool isAuthor = productToEdit.OwnerId == loggedUserId;
+            bool isAuthor = productOwnerId == loggedUserId;
 
             return isAdmin || isAuthor;
         }

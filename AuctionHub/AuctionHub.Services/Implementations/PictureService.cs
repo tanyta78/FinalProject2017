@@ -3,6 +3,8 @@
     using AuctionHub.Data;
     using AuctionHub.Data.Models;
     using AuctionHub.Services.Contracts;
+    using AuctionHub.Services.Models.Products;
+    using AutoMapper.QueryableExtensions;
     using Microsoft.EntityFrameworkCore;
     using System.Collections.Generic;
     using System.Linq;
@@ -65,13 +67,14 @@
             return allPictures;
         }
 
-        public Product GetProductByPictureId(int? pictureId)
+        public ProductDetailsServiceModel GetProductByPictureId(int pictureId)
         {
             var product = this.db
                 .Products
-                .Include(p => p.Pictures)
-                .FirstOrDefault(p => p.Pictures
-                    .Any(pic => pic.Id == pictureId));
+                .Where(p => p.Pictures
+                    .Any(pic => pic.Id == pictureId))
+                .ProjectTo<ProductDetailsServiceModel>()
+                .FirstOrDefault();
 
             return product;
         }

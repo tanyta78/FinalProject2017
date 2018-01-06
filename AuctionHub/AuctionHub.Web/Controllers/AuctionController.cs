@@ -75,12 +75,12 @@
                 RedirectToAction(nameof(ProductController.List), "Product");
             }
 
-            var productForAuction = this.productService.GetProductById(auctionToCreate.ProductId);
+            var productForAuction = this.productService.GetProductByIdAsync(auctionToCreate.ProductId);
 
-            if (productForAuction.OwnerId != loggedUser.Id)
-            {
-                return Forbid();
-            }
+            //if (productForAuction.OwnerId != loggedUser.Id)
+            //{
+            //    return Forbid();
+            //}
 
 
             this.auctionService.Create(
