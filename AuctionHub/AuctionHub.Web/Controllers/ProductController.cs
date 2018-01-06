@@ -69,14 +69,14 @@
         // POST: /Product/Create
         [HttpPost]
         [Authorize]
-        public IActionResult Create(ProductFormModel productToCreate)
+        public async Task<IActionResult> Create(ProductFormModel productToCreate)
         {
             if (!ModelState.IsValid)
             {
                 return View(productToCreate);
             }
-
-            this.productService.CreateAsync(
+            
+            await this.productService.CreateAsync(
                 productToCreate.Name,
                 productToCreate.Description,
                 productToCreate.Pictures,
