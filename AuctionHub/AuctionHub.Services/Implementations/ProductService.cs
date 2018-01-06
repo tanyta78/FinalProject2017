@@ -27,8 +27,8 @@
                 Pictures = pictures,
                 OwnerId = ownerId
             };
-            //this.db.Products.Add(product)?? i think this is correct
-            this.db.Add(product);
+
+            this.db.Products.Add(product);
 
             this.db.SaveChanges();
         }
@@ -66,6 +66,7 @@
             var product = this.db
                 .Products
                 .Include(p => p.Owner)
+                .Include(p => p.Pictures)
                 .FirstOrDefault(p => p.Id == id);
 
             return product;
@@ -74,6 +75,25 @@
         public bool IsProductExist(int id)
         {
             return this.db.Products.Any(p => p.Id == id);
+        }
+
+        public int GetProductPicturesCount(int id)
+        {
+            var count = this.db
+                .Pictures
+                .Count(p => p.ProductId == id);
+
+            return count;
+        }
+
+        public List<Picture> GetProductPictures(int id)
+        {
+            var allPictures = this.db
+                .Pictures
+                .Where(p => p.ProductId == id)
+                .ToList();
+
+            return allPictures;
         }
     }
 }

@@ -10,12 +10,16 @@
 
         void Edit(int id, string name, string description);
 
+        void Delete(int id);
+
         IEnumerable<ProductListingServiceModel> List();
 
         Product GetProductById(int? id);
 
         bool IsProductExist(int id);
 
-        void Delete(int id);
+        int GetProductPicturesCount(int id);
+
+        List<Picture> GetProductPictures(int id);
     }
 }

@@ -1,14 +1,20 @@
 ﻿namespace AuctionHub.Services.Contracts
 {
     using Data.Models;
-    using Microsoft.AspNetCore.Http;
+    using System.Collections.Generic;
 
     public interface IPictureService
     {
-        void AddPicture(FormCollection formCollection, int productId, Picture picture);
+        Picture GetPictureById(int? id);
+
+        void AddPicture(string fullPath, int productId, string authorId);
 
         void DeletePicture(int? id);
 
         void DeleteAllPicturesByProductId(int productId);
+
+        List<Picture> GetPicturesByProductId(int id);
+
+        Product GetProductByPictureId(int? pictureId);
     }
 }
