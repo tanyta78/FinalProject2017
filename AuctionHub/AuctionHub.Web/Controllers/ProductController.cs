@@ -10,14 +10,13 @@
     using Microsoft.AspNetCore.Mvc;
     using Services.Contracts;
     using System;
-    using System.Linq;
     using System.Collections.Generic;
     using System.Drawing;
     using System.Drawing.Drawing2D;
     using System.IO;
+    using System.Linq;
     using System.Threading.Tasks;
     using Web.Models.Product;
-
     using static AuctionHub.Data.DataConstants;
 
     public class ProductController : BaseController
@@ -90,7 +89,7 @@
             var userProducts = await this.productService.ListAsync(ownerId);
 
             var lastCreatedProduct = userProducts.First();
-          
+
             return RedirectToAction(string.Concat(nameof(ProductController.AddPictures), "/", lastCreatedProduct.Id), "Product");
         }
 
@@ -303,7 +302,7 @@
 
                 Image resizedImg =
                     ResizePicture(imgOriginal, PictureMaxWidth, PictureMaxHeight);
-                
+
                 imgOriginal.Dispose();
 
                 // Add the resized picture to filesystem
@@ -367,19 +366,9 @@
 
         private Image ResizePicture(Image imgOriginal, int pictureMaxWidth, int pictureMaxHeight)
         {
-            int width;
-            int height;
-
-            if (imgOriginal.Width > imgOriginal.Height)
-            {
-                width = pictureMaxWidth;
-                height = Convert.ToInt32(imgOriginal.Height * pictureMaxHeight / (double)imgOriginal.Width);
-            }
-            else
-            {
-                width = Convert.ToInt32(imgOriginal.Width * pictureMaxWidth / (double)imgOriginal.Height);
-                height = pictureMaxHeight;
-            }
+            // Height will increase the width proportionally:
+            int width = (pictureMaxHeight * imgOriginal.Width) / imgOriginal.Height;
+            int height = pictureMaxHeight;
 
             var resizedImg = new Bitmap(width, height);
 
