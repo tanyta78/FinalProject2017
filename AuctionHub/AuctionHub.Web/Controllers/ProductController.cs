@@ -10,6 +10,7 @@
     using Microsoft.AspNetCore.Mvc;
     using Services.Contracts;
     using System;
+    using System.Linq;
     using System.Collections.Generic;
     using System.Drawing;
     using System.Drawing.Drawing2D;
@@ -73,6 +74,8 @@
         [Authorize]
         public async Task<IActionResult> Create(ProductFormModel productToCreate)
         {
+            var ownerId = this.userManager.GetUserId(User);
+
             if (!ModelState.IsValid)
             {
                 return View(productToCreate);
@@ -84,7 +87,11 @@
                 productToCreate.Pictures,
                 this.userManager.GetUserId(User));
 
-            return RedirectToAction(nameof(HomeController.Index), "Home");
+            var userProducts = await this.productService.ListAsync(ownerId);
+
+            var lastCreatedProduct = userProducts.First();
+          
+            return RedirectToAction(string.Concat(nameof(ProductController.AddPictures), "/", lastCreatedProduct.Id), "Product");
         }
 
         // GET: /Product/List
@@ -117,10 +124,12 @@
                 return NotFound();
             }
 
-            var model = new ProductViewModel()
+            var model = new ProductFormModel()
             {
+                Id = productToEdit.Id,
                 Name = productToEdit.Name,
-                Description = productToEdit.Description
+                Description = productToEdit.Description,
+                Pictures = productToEdit.Pictures
             };
 
             return View(model);
@@ -129,7 +138,7 @@
         // POST: /Product/Edit
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Edit(ProductViewModel model)
+        public async Task<IActionResult> Edit(ProductFormModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -139,7 +148,7 @@
             await this.productService
                         .EditAsync(model.Id, model.Name, model.Description);
 
-            return RedirectToAction("Details/" + model.Id, "Product");
+            return RedirectToAction(string.Concat(nameof(ProductController.Details), "/", model.Id), "Product");
 
         }
 
@@ -304,7 +313,7 @@
                 pictureService.AddPicture(dbPath, id, authorId);
             }
 
-            return RedirectToAction(string.Concat(nameof(ProductController.AddPictures), "/", product.Id), "Product");
+            return RedirectToAction(string.Concat(nameof(ProductController.Edit), "/", product.Id), "Product");
         }
 
         // POST: /Product/DeletePicture/{id}

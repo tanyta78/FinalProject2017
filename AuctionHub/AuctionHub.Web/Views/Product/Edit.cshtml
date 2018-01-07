@@ -1,4 +1,4 @@
-﻿@model ProductViewModel
+﻿@model ProductFormModel
 @{
     ViewData["Title"] = "Edit";
 }
@@ -16,5 +16,17 @@
             @Html.TextAreaFor(m => m.Description)
         </div>
     </div>
+
+    <div>
+        @foreach (var picture in Model.Pictures)
+        {
+            <a target="_blank" href="@picture.Path">
+                <img src="@picture.Path" height="150" />
+            </a>
+            <a asp-controller="Product" asp-action="DeletePicture" asp-route-id="@picture.Id" class="btn waves-effect waves-yellow">Delete this Picture</a>
+        }
+    </div>
+
+    <a asp-action="AddPictures" asp-route-id="@Model.Id" nethod="get" class="btn waves-effect waves-yellow">Edit pictures</a>
     <input class="btn waves-effect waves-yellow" type="submit" value="Edit" />
 </form>
