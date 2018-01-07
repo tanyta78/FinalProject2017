@@ -26,11 +26,11 @@
             <a target="_blank" href="@picture.Path">
                 <img src="@picture.Path" height="150"/>
             </a>
-            <a asp-controller="Product" asp-action="DeletePicture" asp-route-id="@picture.Id" class="btn waves-effect waves-yellow">Delete this Picture</a>
+            <a asp-controller="Product" asp-action="DeletePicture" asp-route-id="@picture.Id" class="btn waves-effect waves-red">Delete this Picture</a>
         }
     </div>
 
     <a asp-action="Edit" asp-route-id="@Model.Id" class="btn waves-effect waves-yellow">Edit content</a>
-    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn waves-effect waves-red">Delete</a>
+    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn waves-effect red">Delete</a>
 </form>
 

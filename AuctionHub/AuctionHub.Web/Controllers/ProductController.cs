@@ -313,7 +313,7 @@
                 pictureService.AddPicture(dbPath, id, authorId);
             }
 
-            return RedirectToAction(string.Concat(nameof(ProductController.Edit), "/", product.Id), "Product");
+            return RedirectToAction(string.Concat(nameof(ProductController.Details), "/", product.Id), "Product");
         }
 
         // POST: /Product/DeletePicture/{id}
