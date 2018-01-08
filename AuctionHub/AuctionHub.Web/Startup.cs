@@ -8,6 +8,7 @@
     using Infrastructure.Extensions;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
@@ -50,6 +51,15 @@
             services.AddMvc(options =>
             {
                 options.Filters.Add<AutoValidateAntiforgeryTokenAttribute>();
+                options.SslPort = 44346;
+                options.Filters.Add(new RequireHttpsAttribute());
+            });
+            services.AddAntiforgery(options =>
+            {
+                options.Cookie.Name = "_af";
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.HeaderName = "X-XSRF-TOKEN";
             });
         }
         
