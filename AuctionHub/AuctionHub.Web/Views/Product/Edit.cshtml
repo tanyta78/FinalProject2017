@@ -2,31 +2,38 @@
 @{
     ViewData["Title"] = "Edit";
 }
-<h2>Edit Product</h2>
-<form asp-controller="Product" asp-action="Edit" method="post">
-    <div>
-        @Html.LabelFor(m => m.Name)
-        <div>
-            @Html.TextBoxFor(m => m.Name)
-        </div>
-    </div>
-    <div>
-        @Html.LabelFor(m => m.Description)
-        <div>
-            @Html.TextAreaFor(m => m.Description)
-        </div>
-    </div>
 
-    <div>
-        @foreach (var picture in Model.Pictures)
-        {
-            <a target="_blank" href="@picture.Path">
-                <img src="@picture.Path" height="150" />
-            </a>
-            <a asp-controller="Product" asp-action="DeletePicture" asp-route-id="@picture.Id" class="btn waves-effect waves-yellow">Delete this Picture</a>
-        }
-    </div>
+<div class="row">
+    <div class="col s4"></div>
+    <div class="col s4">
+        <h2 class="text center">Edit Product</h2>
+        <form asp-controller="Product" asp-action="Edit" method="post">
+            <div>
+                @Html.LabelFor(m => m.Name)
+                <div>
+                    @Html.TextBoxFor(m => m.Name)
+                </div>
+            </div>
+            <div>
+                @Html.LabelFor(m => m.Description)
+                <div>
+                    @Html.TextAreaFor(m => m.Description, new { @readonly = "readonly", rows = 10, style = "height:auto" })
+                </div>
+            </div>
 
-    <a asp-action="AddPictures" asp-route-id="@Model.Id" class="btn waves-effect waves-yellow">Edit pictures</a>
-    <input class="btn waves-effect waves-yellow" type="submit" value="Confirm Changes" />
-</form>
+            <div>
+                @foreach (var picture in Model.Pictures)
+                {
+                    <a target="_blank" href="@picture.Path">
+                        <img src="@picture.Path" height="150" />
+                    </a>
+                    <a asp-controller="Product" asp-action="DeletePicture" asp-route-id="@picture.Id" class="btn waves-effect waves-yellow">Delete this Picture</a>
+                }
+            </div>
+
+            <a asp-action="AddPictures" asp-route-id="@Model.Id" class="btn waves-effect waves-yellow">Edit pictures</a>
+            <input class="btn waves-effect waves-yellow" type="submit" value="Confirm Changes" />
+        </form>
+    </div>
+    <div class="col s4"></div>
+</div>

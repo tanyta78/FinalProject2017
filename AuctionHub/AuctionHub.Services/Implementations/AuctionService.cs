@@ -101,9 +101,9 @@
         public IEnumerable<Auction> IndexAuctionsList()
         {
             var auctionsToView = this.db.Auctions
-                                                      .Include(a => a.Product)
-                                                      .Take(DataConstants.AuctionToShow);
-                                                      //.ToListAsync();
+                                        .Include(a => a.Product)
+                                        .Take(DataConstants.AuctionToShow)
+                                        .ToList();
             return auctionsToView;
         }
 

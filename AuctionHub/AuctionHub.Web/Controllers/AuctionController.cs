@@ -17,12 +17,7 @@
         private readonly IProductService productService;
         private readonly ICategoryService categoryService;
         private readonly UserManager<User> userManager;
-
-        public AuctionController()
-        {
-            
-        }
-
+        
         public AuctionController( IAuctionService auctionService, UserManager<User> userManager,IProductService productService, ICategoryService categoryService)
         {
             this.auctionService = auctionService;
@@ -38,15 +33,14 @@
             var auctions = this.auctionService.IndexAuctionsList()
                                .Select(a => new IndexAuctionViewModel()
                                {
-                                   PicturePath = a.Product.Pictures.First().Path,
+                                   PicturePath = a.Product.Pictures.FirstOrDefault()?.Path,
                                    Description = a.Description,
                                    EndDate = a.EndDate,
-                                   LastBiddedPrice = a.Bids.Last().Value,
-                                   OwnerName = a.Product.Owner.Name,
-                                   ProductName = a.Product.Name,
+                                   LastBiddedPrice = a.Bids != null ? a.Bids.Count > 0 ? a.Bids.Last().Value : 0 : 0,
+                                   OwnerName = a.Product?.Owner?.Name,
+                                   ProductName = a.Product?.Name,
                                    Id = a.Id
-                               })
-                               .ToList();
+                               });
 
             return this.View(auctions);
         }
@@ -67,7 +61,7 @@
                 return View(auctionToCreate);
             }
             //Create(string description, decimal price, DateTime startDate, DateTime endDate, int categoryId, int productId)
-            User loggedUser = await this.userManager.FindByEmailAsync(this.User.Identity.Name);
+            User loggedUser = await this.userManager.FindByNameAsync(this.User.Identity.Name);
           
             
             if (!this.categoryService.IsCategoryExist(auctionToCreate.CategoryId))
