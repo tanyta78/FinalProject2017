@@ -35,4 +35,10 @@
     <None Include="Views\Auction\Create.cshtml" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="localhost.pfx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
