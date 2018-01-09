@@ -13,6 +13,7 @@
     using Data;
     using Microsoft.AspNetCore.Mvc.RazorPages;
     using Microsoft.EntityFrameworkCore;
+    using AuctionHub.Services.Models.Auctions;
 
     public class AuctionController : BaseController
     {
@@ -20,13 +21,20 @@
         private readonly IProductService productService;
         private readonly ICategoryService categoryService;
         private readonly UserManager<User> userManager;
-        
-        public AuctionController( IAuctionService auctionService, UserManager<User> userManager,IProductService productService, ICategoryService categoryService)
+        private readonly IBidService bids;
+
+        public AuctionController(
+            IAuctionService auctionService, 
+            UserManager<User> userManager, 
+            IProductService productService, 
+            ICategoryService categoryService,
+            IBidService bids)
         {
             this.auctionService = auctionService;
             this.userManager = userManager;
             this.productService = productService;
             this.categoryService = categoryService;
+            this.bids = bids;
         }
 
         //GET Auction Index
@@ -64,7 +72,7 @@
 
             return View(newAuction);
         }
-            
+
 
         //POST Auction/Create
         [HttpPost]
@@ -77,8 +85,8 @@
             }
             //Create(string description, decimal price, DateTime startDate, DateTime endDate, int categoryId, int productId)
             User loggedUser = await this.userManager.FindByNameAsync(this.User.Identity.Name);
-          
-            
+
+
             if (!this.categoryService.IsCategoryExist(auctionToCreate.CategoryId))
             {
                 return this.BadRequest();
@@ -103,13 +111,13 @@
                 return this.BadRequest();
             }
 
-             await this.auctionService.Create(
-                auctionToCreate.Description,
-                auctionToCreate.Price,
-                auctionToCreate.StartDate,
-                auctionToCreate.EndDate,
-                auctionToCreate.CategoryId,
-                auctionToCreate.ProductId);
+            await this.auctionService.Create(
+               auctionToCreate.Description,
+               auctionToCreate.Price,
+               auctionToCreate.StartDate,
+               auctionToCreate.EndDate,
+               auctionToCreate.CategoryId,
+               auctionToCreate.ProductId);
 
             return RedirectToAction(nameof(AuctionController.Index), "Auction");
         }
@@ -122,7 +130,7 @@
 
             var ownerId = this.userManager.GetUserId(User);
 
-            var allAuctions = await this.auctionService.ListAsync(ownerId,page,search);
+            var allAuctions = await this.auctionService.ListAsync(ownerId, page, search);
 
             var result = allAuctions
                 .OrderByDescending(a => a.EndDate)
@@ -150,22 +158,19 @@
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
-            var currentAuction = await this.auctionService.GetAuctionByIdAsync(id);
+            AuctionDetailsServiceModel currentAuction = await this.auctionService.GetAuctionByIdAsync(id);
 
             if (currentAuction == null)
             {
                 return NotFound();
             }
-
-            var model = new AuctionFormModel
+            IEnumerable<Bid> bids = this.bids.GetForAuction(id);
+            var model = new AuctionDetailsViewModel
             {
-               Description = currentAuction.Description,
-               CategoryId = currentAuction.CategoryId,
-               EndDate = currentAuction.EndDate,
-               Price = currentAuction.Price,
-               ProductId = currentAuction.ProductId,
-               StartDate = currentAuction.StartDate
+                Auction = currentAuction,
+                LastBids = bids
             };
+
 
             return View(model);
         }
@@ -181,7 +186,7 @@
                 return NotFound();
             }
 
-           return this.View(currentAuction);
+            return this.View(currentAuction);
         }
 
 
@@ -262,7 +267,7 @@
 
 
         }
-        
+
         private static bool IsValid(object obj)
         {
             var validationContext = new ValidationContext(obj);

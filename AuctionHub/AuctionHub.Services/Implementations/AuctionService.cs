@@ -19,13 +19,28 @@
         {
             this.db = db;
         }
-        
+
         public async Task<AuctionDetailsServiceModel> GetAuctionByIdAsync(int id)
-            => await this.db
+        {
+            var result = this.db
                  .Auctions
-                 .Where(a => a.Id == id)
-                 .ProjectTo<AuctionDetailsServiceModel>()
-                 .FirstOrDefaultAsync();
+                 .FirstOrDefault(a => a.Id == id);
+            var serviceModel = new AuctionDetailsServiceModel
+            {
+                CategoryName = result.Category?.Name,
+                Description = result.Description,
+                LastBidder = result.LastBidder?.UserName,
+                Price = result.Price,
+                ProductName = result.Product?.Name,
+                Id = result.Id
+            };
+            //var result =  await this.db
+            //     .Auctions
+            //     .Where(a => a.Id == id)
+            //     .ProjectTo<AuctionDetailsServiceModel>()
+            //     .FirstOrDefaultAsync();
+            return serviceModel;
+        }
 
         public async Task<IEnumerable<AuctionDetailsServiceModel>> GetByCategoryNameAsync(string categoryName)
              => await this.db
@@ -116,7 +131,7 @@
             {
                 return;
             }
-            auction.EndDate = endDate;
+            //auction.EndDate = endDate;
 
             await this.db.SaveChangesAsync();
         }

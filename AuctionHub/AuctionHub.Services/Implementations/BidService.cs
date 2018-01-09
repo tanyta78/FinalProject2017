@@ -1,6 +1,7 @@
 ﻿namespace AuctionHub.Services.Implementations
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using Contracts;
@@ -29,5 +30,9 @@
             await this.db.Bids.AddAsync(bid);
             await this.db.SaveChangesAsync();
         }
+
+        public IEnumerable<Bid> GetForAuction(int auctionId) 
+            =>this.db.Bids.Where(b => b.AuctionId == auctionId).ToList();
+        
     }
 }
