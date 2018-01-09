@@ -121,10 +121,10 @@
                 {
                     Description = a.Description,
                     EndDate = a.EndDate,
-                    LastBiddedPrice = a.Bids.LastOrDefault().Value,
+                    LastBiddedPrice = a.Bids != null ? a.Bids.Count > 0 ? a.Bids.Last().Value : 0 : 0,
                     OwnerName = a.Product.Owner.Name,
                     Id = a.Id,
-                    PicturePath = a.Product.Pictures.LastOrDefault().Path,
+                    PicturePath = a.Product.Pictures.FirstOrDefault().Path,
                     ProductName = a.Product.Name
                 })
                 .ToList();
@@ -134,7 +134,29 @@
             return View(result);
         }
 
+        //GET: Auction/Details
+        [HttpGet]
+        public async Task<IActionResult> Details(int id)
+        {
+            var currentAuction = await this.auctionService.GetAuctionByIdAsync(id);
 
+            if (currentAuction == null)
+            {
+                return NotFound();
+            }
+
+            var model = new AuctionFormModel
+            {
+               Description = currentAuction.Description,
+               CategoryId = currentAuction.CategoryId,
+               EndDate = currentAuction.EndDate,
+               Price = currentAuction.Price,
+               ProductId = currentAuction.ProductId,
+               StartDate = currentAuction.StartDate
+            };
+
+            return View(model);
+        }
 
 
 
