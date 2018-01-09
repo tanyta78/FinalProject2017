@@ -174,7 +174,22 @@
 
 
 
-        //
+        //POST : Auction/Delete
+        [HttpPost]
+        [ActionName("Delete")]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var currentAuction = await this.auctionService.GetAuctionByIdAsync(id);
+
+            if (currentAuction == null)
+            {
+                return NotFound();
+            }
+
+            this.auctionService.Delete(id);
+
+            return RedirectToAction("List");
+        }
 
 
         //GET: Auction/Edit
@@ -189,6 +204,51 @@
             }
 
             return this.View(currentAuction);
+        }
+
+        //POST: Auction/Edit
+        [HttpPost]
+        public async Task<IActionResult> Edit(AuctionEditViewModel auctionToEdit)
+        {
+            //if (!ModelState.IsValid)
+            //{
+            //    return View(auctionToEdit);
+            //}
+
+            User loggedUser = await this.userManager.FindByNameAsync(this.User.Identity.Name);
+
+            if (!this.categoryService.IsCategoryExist(auctionToEdit.CategoryId))
+            {
+                return this.BadRequest();
+            }
+
+            var categoryForAuction = this.categoryService.GetCategoryById(auctionToEdit.CategoryId);
+
+            if (!this.productService.IsProductExist(auctionToEdit.ProductId))
+            {
+                RedirectToAction(nameof(ProductController.List), "Product");
+            }
+
+            var productForAuction = await this.productService.GetProductByIdAsync(auctionToEdit.ProductId);
+
+            if (productForAuction.OwnerId != loggedUser.Id)
+            {
+                return Forbid();
+            }
+
+            if (!IsValid(auctionToEdit))
+            {
+                return this.BadRequest();
+            }
+
+            await this.auctionService.Edit(
+                auctionToEdit.Id,
+                auctionToEdit.EndDate
+                );
+
+            return RedirectToAction("Details");
+
+
         }
 
 
