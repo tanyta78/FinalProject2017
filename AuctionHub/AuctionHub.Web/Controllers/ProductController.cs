@@ -24,10 +24,9 @@
         private readonly IHostingEnvironment hostingEnvironment;
         private readonly IProductService productService;
         private readonly IPictureService pictureService;
-        private readonly AuctionHubDbContext db;
         private readonly UserManager<User> userManager;
 
-        public ProductController(AuctionHubDbContext db,
+        public ProductController(
             UserManager<User> userManager,
             IProductService productService,
             IPictureService pictureService,
@@ -36,7 +35,6 @@
             this.hostingEnvironment = hostingEnvironment;
             this.productService = productService;
             this.pictureService = pictureService;
-            this.db = db;
             this.userManager = userManager;
         }
 

@@ -1,40 +1,34 @@
-﻿using System;
-using AuctionHub.Data;
-using AuctionHub.Data.Models;
-using AuctionHub.Services.Contracts;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-
-namespace AuctionHub.Web.Controllers
+﻿namespace AuctionHub.Web.Controllers
 {
+    using AuctionHub.Data;
+    using AuctionHub.Data.Models;
+    using AuctionHub.Services.Contracts;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.Mvc;
+    using System;
+    using System.Threading.Tasks;
+
     public class BidController : BaseController
     {
         private readonly IBidService bidService;
-        private readonly AuctionHubDbContext db;
         private readonly UserManager<User> userManager;
 
         public BidController(IBidService bidService, AuctionHubDbContext db, UserManager<User> userManager)
         {
             this.bidService = bidService;
-            this.db = db;
             this.userManager = userManager;
         }
 
-        public IActionResult Bidding(int? id)
+        public async Task<IActionResult> Create(int auctionId, decimal value)
         {
-            if (id == null)
-            {
-                return BadRequest();
-            }
+            var userId = this.userManager.GetUserId(User);
 
-            var currentBid = bidService.GetBidById(id);
+            var bidTime = DateTime.UtcNow;
 
-            if (currentBid == null)
-            {
-                return NotFound();
-            }
+            await this.bidService
+                .CreateAsync(bidTime, value, userId, auctionId);
 
-            return View(currentBid);
+            return RedirectToAction(string.Concat(nameof(AuctionController.Details), "/", "Auction"));
         }
     }
 }

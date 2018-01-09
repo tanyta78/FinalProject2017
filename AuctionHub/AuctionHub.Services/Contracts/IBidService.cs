@@ -1,9 +1,10 @@
 ﻿namespace AuctionHub.Services.Contracts
 {
-    using Data.Models;
+    using System;
+    using System.Threading.Tasks;
 
     public interface IBidService
     {
-        Bid GetBidById(int? id);
+        Task CreateAsync(DateTime bidTime, decimal value, string userId, int auctionId);
     }
 }
