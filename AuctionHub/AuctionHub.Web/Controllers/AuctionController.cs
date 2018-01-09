@@ -158,6 +158,39 @@
             return View(model);
         }
 
+        //GET: Auction/Delete
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var currentAuction = await this.auctionService.GetAuctionByIdAsync(id);
+
+            if (currentAuction == null)
+            {
+                return NotFound();
+            }
+
+           return this.View(currentAuction);
+        }
+
+
+
+        //
+
+
+        //GET: Auction/Edit
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var currentAuction = await this.auctionService.GetAuctionByIdAsync(id);
+
+            if (currentAuction == null)
+            {
+                return NotFound();
+            }
+
+            return this.View(currentAuction);
+        }
+
 
 
 
