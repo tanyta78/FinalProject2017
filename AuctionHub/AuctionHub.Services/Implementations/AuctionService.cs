@@ -34,6 +34,29 @@
                 .ProjectTo<AuctionDetailsServiceModel>()
                 .ToListAsync();
 
+        public async Task<IQueryable<Auction>> ListAsync(string ownerId, int page, string search)
+        {
+          
+            var auctionsQuery = this.db.Auctions.AsQueryable();
+            if (ownerId!=null)
+            {
+                auctionsQuery = auctionsQuery.Where(a => a.Product.OwnerId == ownerId);
+            }
+
+            if (search!=null)
+            {
+                // we can add different search options
+                auctionsQuery = auctionsQuery.Where(a =>
+                    a.Product.Name.ToLower().Contains(search.ToLower()) ||
+                    a.Product.Description.ToLower().Contains(search.ToLower())
+                );
+            }
+
+            return auctionsQuery;
+
+        }
+
+
         public async Task Create(string description, decimal price, DateTime startDate, DateTime endDate, int categoryId, int productId)
         {
            var auction = new Auction()

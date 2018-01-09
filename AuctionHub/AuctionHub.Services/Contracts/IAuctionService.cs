@@ -4,6 +4,7 @@
     using Services.Models.Auctions;
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
 
     public interface IAuctionService
@@ -22,5 +23,6 @@
 
         Task<IEnumerable<AuctionDetailsServiceModel>> GetByCategoryNameAsync(string categoryName);
 
+       Task<IQueryable<Auction>> ListAsync(string ownerId, int page, string search);
     }
 }

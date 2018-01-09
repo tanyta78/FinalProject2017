@@ -10,6 +10,9 @@
     using System.ComponentModel.DataAnnotations;
     using System.Linq;
     using System.Threading.Tasks;
+    using Data;
+    using Microsoft.AspNetCore.Mvc.RazorPages;
+    using Microsoft.EntityFrameworkCore;
 
     public class AuctionController : BaseController
     {
@@ -98,6 +101,60 @@
 
             return RedirectToAction(nameof(AuctionController.Index), "Auction");
         }
+
+        //GET: Auction/List
+        [HttpGet]
+        public async Task<IActionResult> List(int page = 1, string search = null, string user = null)
+        {
+            var pageSize = DataConstants.AuctionToShow;
+
+            var ownerId = this.userManager.GetUserId(User);
+
+            var allAuctions = await this.auctionService.ListAsync(ownerId,page,search);
+
+            var result = allAuctions
+                .OrderByDescending(a => a.EndDate)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                //.Include()
+                .Select(a => new IndexAuctionViewModel()
+                {
+                    Description = a.Description,
+                    EndDate = a.EndDate,
+                    LastBiddedPrice = a.Bids.LastOrDefault().Value,
+                    OwnerName = a.Product.Owner.Name,
+                    Id = a.Id,
+                    PicturePath = a.Product.Pictures.LastOrDefault().Path,
+                    ProductName = a.Product.Name
+                })
+                .ToList();
+
+            // how to make viewbag.currentpage = page;
+
+            return View(result);
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         private static bool IsValid(object obj)
         {
