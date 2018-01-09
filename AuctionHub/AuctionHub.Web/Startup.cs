@@ -54,6 +54,8 @@
                 options.SslPort = 44346;
                 options.Filters.Add(new RequireHttpsAttribute());
             });
+            services.AddSignalR();
+            //services.AddNodeServices();
             services.AddAntiforgery(options =>
             {
                 options.Cookie.Name = "_af";
@@ -81,6 +83,11 @@
             app.UseStaticFiles();
 
             app.UseAuthentication();
+
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<AuctionHub.Web.Hubs.AuctionHub>("bid");
+            });
 
             app.UseMvc(routes =>
             {

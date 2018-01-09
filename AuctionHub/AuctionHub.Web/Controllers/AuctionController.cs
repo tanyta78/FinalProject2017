@@ -262,27 +262,7 @@
 
 
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        
         private static bool IsValid(object obj)
         {
             var validationContext = new ValidationContext(obj);
@@ -290,6 +270,11 @@
 
             var isValid = Validator.TryValidateObject(obj, validationContext, validationResults, true);
             return isValid;
+        }
+
+        public IActionResult Test()
+        {
+            return View();
         }
 
     }
