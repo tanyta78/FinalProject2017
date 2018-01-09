@@ -34,6 +34,7 @@
         public IActionResult Index()
         {
             var auctions = this.auctionService.IndexAuctionsList()
+                               .Where(x => x.IsActive == true)
                                .Select(a => new IndexAuctionViewModel()
                                {
                                    PicturePath = a.Product.Pictures.FirstOrDefault()?.Path,
@@ -42,8 +43,9 @@
                                    LastBiddedPrice = a.Bids != null ? a.Bids.Count > 0 ? a.Bids.Last().Value : 0 : 0,
                                    OwnerName = a.Product?.Owner?.Name,
                                    ProductName = a.Product?.Name,
-                                   Id = a.Id
-                               });
+                                   Id = a.Id,
+                                   IsActive = a.IsActive
+                               }).Where(pr => pr.IsActive == true);
 
             return this.View(auctions);
         }
@@ -51,8 +53,18 @@
         //GET Auction/Create
         [HttpGet]
         [Authorize]
-        public IActionResult Create()
-            => View();
+        public IActionResult Create(int id)
+        {
+            var loggedUserId = this.userManager.GetUserId(User);
+
+            var newAuction = new AuctionFormModel()
+            {
+                ProductId = id
+            };
+
+            return View(newAuction);
+        }
+            
 
         //POST Auction/Create
         [HttpPost]

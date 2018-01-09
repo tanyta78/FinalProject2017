@@ -17,5 +17,9 @@
         public string ProductName { get; set; }
 
         public string PicturePath { get; set; }
+
+        public bool IsActive { get; set; }
+
+        public int? BuyerId { get; set; }
     }
 }
