@@ -13,18 +13,26 @@
     public class BidController : BaseController
     {
         private readonly IBidService bidService;
+        private readonly IAuctionService auctionService;
         private readonly UserManager<User> userManager;
 
-        public BidController(IBidService bidService, AuctionHubDbContext db, UserManager<User> userManager)
+        public BidController(IBidService bidService, IAuctionService auctionService, AuctionHubDbContext db, UserManager<User> userManager)
         {
             this.bidService = bidService;
+            this.auctionService = auctionService;
             this.userManager = userManager;
         }
 
         public async Task<IActionResult> Create(int auctionId, decimal value)
         {
             IEnumerable<Bid> allByAuction = this.bidService.GetForAuction(auctionId);
-            decimal maxBid = allByAuction.Select(b => b.Value).Max();
+            var auction = await this.auctionService.GetAuctionByIdAsync(auctionId);
+            var initialPrice = auction.Price;
+
+            decimal maxBid = allByAuction.Any() 
+                ? allByAuction.Max(b => b.Value) 
+                : initialPrice;
+
             if (maxBid >= value)
             {
                 return BadRequest($"Bid value cannot be less than or equal to {maxBid}");
