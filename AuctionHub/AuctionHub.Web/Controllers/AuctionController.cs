@@ -191,11 +191,18 @@
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
+            var loggedUserId = this.userManager.GetUserId(User);
+
             var currentAuction = await this.auctionService.GetAuctionByIdAsync(id);
 
             if (currentAuction == null)
             {
                 return NotFound();
+            }
+
+            if(currentAuction.OwnerId != loggedUserId)
+            {
+                return BadRequest("You are not owner/administrator of this auction!");
             }
 
             return this.View(currentAuction);
@@ -292,6 +299,14 @@
         public IActionResult Test()
         {
             return View();
+        }
+
+        private bool IsUserAuthorizedToEdit(string auctionOwnerId, string loggedUserId)
+        {
+            bool isAdmin = this.User.IsInRole("Administrator");
+            bool isAuthor = auctionOwnerId == loggedUserId;
+
+            return isAdmin || isAuthor;
         }
 
     }

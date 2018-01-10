@@ -1,14 +1,46 @@
-﻿@model AuctionHub.Services.Models.Auctions.AuctionDetailsServiceModel
+﻿@model AuctionDetailsViewModel
 
-<!DOCTYPE html>
+<h3 class="text center">Auction for product "@Model.Auction.ProductName"</h3>
 
-<html>
-<head>
-    <title>title</title>
-</head>
-<body>
-<div>
-      
+<div class="row">
+    <div class="col s4"></div>
+    <div class="col s4">
+        <h2 class="text center">Auction Delete</h2>
+        <form asp-controller="Auction" asp-action="Delete" method="post">
+            <div>
+                <div>
+                    @Html.LabelFor(m => m.Auction.CategoryName)
+                </div>
+                <div>
+                    @Html.TextBoxFor(m => m.Auction.CategoryName, new { @readonly = "readonly" })
+                </div>
+            </div>
+            <div>
+                @Html.LabelFor(m => m.Auction.Description)
+                <div>
+                    @Html.TextAreaFor(m => m.Auction.Description, new { @readonly = "readonly", rows = 10, style = "height:auto" })
+                </div>
+            </div>
+
+            <div>
+                @foreach (var picture in Model.Auction.Pictures)
+                {
+                    <a target="_blank" href="@picture.Path">
+                        <img src="@picture.Path" height="150" />
+                    </a>
+                    <a asp-controller="Product" asp-action="DeletePicture" asp-route-id="@picture.Id" class="btn waves-effect waves-red">Delete this Picture</a>
+                }
+            </div>
+            <ul>
+                @foreach (Bid bid in Model.LastBids)
+                {
+                    <li>
+                        <i></i> - @bid.Value$
+                    </li>
+                }
+            </ul>
+            <a asp-controller="Auction" asp-action="Delete" asp-route-id="@Model.Auction.Id" class="btn waves-effect red">Confirm Delete</a>
+        </form>
+    </div>
+    <div class="col s4"></div>
 </div>
-</body>
-</html>

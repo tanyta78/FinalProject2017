@@ -11,6 +11,10 @@
     {
         public int Id { get; set; }
         public string Description { get; set; }
+        public string OwnerId { get; set; }
+
+        public User Owner { get; set; }
+
         public decimal Price { get; set; }
         public string LastBidder { get; set; }
         public string CategoryName { get; set; }

@@ -1,14 +1,13 @@
 ﻿@model AuctionHub.Services.Models.Auctions.AuctionDetailsServiceModel
 
-<!DOCTYPE html>
-
-<html>
-<head>
-    <title>title</title>
-</head>
-<body>
-<div>
-      
+<div class="row">
+    <div class="col s4"></div>
+    <div class="col s4">
+        <h2 class="text center">Edit Auction</h2>
+        <form method="post" asp-action="Edit">
+            @Html.EditorForModel()
+            <input class="btn" type="submit" value="Edit" />
+        </form>
+    </div>
+    <div class="col s4"></div>
 </div>
-</body>
-</html>
