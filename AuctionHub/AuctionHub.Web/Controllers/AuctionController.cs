@@ -66,9 +66,7 @@
         public IActionResult Create(int id)
         {
             var loggedUserId = this.userManager.GetUserId(User);
-
             
-
             if(auctionService.IsAuctionExist(id))
             {
                 return this.BadRequest("The selected product is already in active/inactive auction!");
@@ -208,7 +206,12 @@
                 return BadRequest("You are not owner/administrator of this auction!");
             }
 
-            return this.View(currentAuction);
+            var model = new AuctionDeleteViewModel
+            {
+                Auction = currentAuction
+            };
+
+            return this.View(model);
         }
 
 
@@ -225,9 +228,9 @@
                 return NotFound();
             }
 
-            this.auctionService.Delete(id);
+            await this.auctionService.Delete(id);
 
-            return RedirectToAction("List");
+            return RedirectToAction(nameof(AuctionController.Index));
         }
 
 

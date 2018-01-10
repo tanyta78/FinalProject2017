@@ -13,7 +13,7 @@
             <thead>
                 <tr>
                     <th>Product</th>
-                    <th>Price</th>
+                    <th>Starting Price</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -24,7 +24,6 @@
                         <th><h5>@auction.ProductName</h5></th>
                         <th>@auction.Price</th>
                         <th><a asp-action="Details" asp-route-id="@auction.Id" class="btn waves-effect waves-purple">Auction Details</a>
-                            <a asp-controller="Bid" asp-action="Create" asp-route-id="@auction.Id" class="btn waves-effect waves-orange grey">Make Bid</a></th>
                         <th></th>
                     </tr>
                 }

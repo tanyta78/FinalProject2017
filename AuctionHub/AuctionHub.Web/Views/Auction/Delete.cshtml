@@ -1,4 +1,4 @@
-﻿@model AuctionDetailsViewModel
+﻿@model AuctionDeleteViewModel
 
 <h3 class="text center">Auction for product "@Model.Auction.ProductName"</h3>
 
@@ -31,15 +31,7 @@
                     <a asp-controller="Product" asp-action="DeletePicture" asp-route-id="@picture.Id" class="btn waves-effect waves-red">Delete this Picture</a>
                 }
             </div>
-            <ul>
-                @foreach (Bid bid in Model.LastBids)
-                {
-                    <li>
-                        <i></i> - @bid.Value$
-                    </li>
-                }
-            </ul>
-            <a asp-controller="Auction" asp-action="Delete" asp-route-id="@Model.Auction.Id" class="btn waves-effect red">Confirm Delete</a>
+            <input class="btn waves-effect red" type="submit" value="Confirm Deletion" />
         </form>
     </div>
     <div class="col s4"></div>

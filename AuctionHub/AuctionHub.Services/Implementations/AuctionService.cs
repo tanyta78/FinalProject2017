@@ -132,25 +132,36 @@
         {
             var auction = await this.db.Auctions.FindAsync(id);
 
-            //delete connection with product
-            var auctionProductId = auction.ProductId;
-            this.db.Products.FindAsync(auctionProductId).Result.AuctionId = null;
             
-            //delete connection with category
-            var auctionCategoryId = auction.CategoryId;
-            this.db.Categories.FindAsync(auctionCategoryId).Result.Auctions.Remove(auction);
+            if (auction == null)
+            {
+                return;
+            }
 
+            // Here, before we delete the product, its pictures in the file system should be deleted as well!
 
-            // delete connection with bidding??? NOT FINNISHED
-
-           var bidsList= this.db.Bids.Where(b => b.AuctionId == id);
-            
-            this.db.SaveChanges();
-            
-            // auction.IsActive = false;
             this.db.Auctions.Remove(auction);
-
             await this.db.SaveChangesAsync();
+
+           // delete connection with product
+           // var auctionProductId = auction.ProductId;
+           // this.db.Products.FindAsync(auctionProductId).Result.AuctionId = null;
+
+           // delete connection with category
+           // var auctionCategoryId = auction.CategoryId;
+           // this.db.Categories.FindAsync(auctionCategoryId).Result.Auctions.Remove(auction);
+
+
+           // delete connection with bidding??? NOT FINNISHED
+
+           //var bidsList = this.db.Bids.Where(b => b.AuctionId == id);
+
+           // this.db.SaveChanges();
+
+           // auction.IsActive = false;
+           // this.db.Auctions.Remove(auction);
+
+           // await this.db.SaveChangesAsync();
         }
 
         public async Task Edit(int id, DateTime endDate)
@@ -169,8 +180,9 @@
         public IEnumerable<Auction> IndexAuctionsList()
         {
             var auctionsToView = this.db.Auctions
+                                        .Where(st => st.IsActive == true)
                                         .Include(a => a.Product)
-                                        .Take(DataConstants.AuctionToShow)
+                                        //.Take(DataConstants.AuctionToShow)
                                         .ToList();
             return auctionsToView;
         }
