@@ -82,7 +82,7 @@
                EndDate = endDate,
                CategoryId = categoryId,
                ProductId = productId,
-             //  IsActive = true
+               IsActive = true
            };
 
             this.db.Auctions.Add(auction);

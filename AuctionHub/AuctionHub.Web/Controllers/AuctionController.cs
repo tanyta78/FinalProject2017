@@ -14,6 +14,7 @@
     using Microsoft.AspNetCore.Mvc.RazorPages;
     using Microsoft.EntityFrameworkCore;
     using AuctionHub.Services.Models.Auctions;
+    using System;
 
     public class AuctionController : BaseController
     {
@@ -42,7 +43,6 @@
         public IActionResult Index()
         {
             var auctions = this.auctionService.IndexAuctionsList()
-                               .Where(x => x.IsActive == true)
                                .Select(a => new IndexAuctionViewModel()
                                {
                                    PicturePath = a.Product.Pictures.FirstOrDefault()?.Path,
@@ -53,7 +53,11 @@
                                    ProductName = a.Product?.Name,
                                    Id = a.Id,
                                    IsActive = a.IsActive
-                               }).Where(pr => pr.IsActive == true);
+                               }).Where(pr => pr.IsActive == true)
+                               .ToList();
+            //var auctions = this.auctionService.IndexAuctionsList()
+            //    .Select(x => x.Id)
+            //    .ToList();
 
             return this.View(auctions);
         }
@@ -67,7 +71,10 @@
 
             var newAuction = new AuctionFormModel()
             {
-                ProductId = id
+                ProductId = id,
+                StartDate = DateTime.Now,
+                EndDate = DateTime.Now.AddDays(30),
+                IsActive = true
             };
 
             return View(newAuction);
