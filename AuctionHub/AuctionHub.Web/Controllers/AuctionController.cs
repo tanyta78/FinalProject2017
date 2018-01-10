@@ -55,9 +55,6 @@
                                    IsActive = a.IsActive
                                }).Where(pr => pr.IsActive == true)
                                .ToList();
-            //var auctions = this.auctionService.IndexAuctionsList()
-            //    .Select(x => x.Id)
-            //    .ToList();
 
             return this.View(auctions);
         }

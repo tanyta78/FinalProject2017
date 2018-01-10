@@ -2,20 +2,26 @@
 @{
     ViewData["Title"] = "Delete";
 }
-<h2>Delete</h2>
 
-<form asp-controller="Product" asp-action="Delete" method="post">
-    <div>
-        @Html.LabelFor(m => m.Name)
-        <div>
-            @Html.TextBoxFor(m => m.Name, new { @readonly = "readonly" })
+<div class="row">
+    <div class="col s4"></div>
+    <div class="col s4">
+        <h2 class="text center">Delete Product</h2>
+        <form asp-controller="Product" asp-action="Delete" method="post">
+            <div>
+                @Html.LabelFor(m => m.Name)
+                <div>
+                    @Html.TextBoxFor(m => m.Name, new { @readonly = "readonly" })
+                </div>
+            </div>
+            <div>
+                @Html.LabelFor(m => m.Description)
+                <div>
+                    @Html.TextAreaFor(m => m.Description, new { @readonly = "readonly" })
+                </div>
+            </div>
+            <input class="btn waves-effect red" type="submit" value="Confirm Deletion" />
+        </form>
         </div>
     </div>
-    <div>
-        @Html.LabelFor(m => m.Description)
-        <div>
-            @Html.TextAreaFor(m => m.Description, new { @readonly = "readonly"})
-        </div>
-    </div>
-    <input class="btn waves-effect red" type="submit" value="Confirm Deletion"/>
-</form>
+        
