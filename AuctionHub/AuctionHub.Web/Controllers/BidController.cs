@@ -40,6 +40,11 @@
 
             var userId = this.userManager.GetUserId(User);
 
+            if (userId == auction.OwnerId)
+            {
+                return BadRequest("You cannot bid the price of your own auction!");
+            }
+
             var bidTime = DateTime.UtcNow;
 
             await this.bidService

@@ -29,6 +29,7 @@
                 {
                     Id = a.Id,
                     Description = a.Description,
+                    OwnerId = a.Product.OwnerId,
                     Price = a.Price,
                     LastBidder = a.LastBidder.Id,
                     CategoryName = a.Category.Name,
