@@ -8,6 +8,8 @@
 
         public string Description { get; set; }
 
+        public decimal Price { get; set; }
+
         public DateTime EndDate { get; set; }
 
         public decimal LastBiddedPrice { get; set; }

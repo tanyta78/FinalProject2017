@@ -5,16 +5,32 @@
 
 }
 
-<div class="row">
-    <div class="col s3"></div>
-    <div class="col s6">
-        @foreach (var auction in Model)
-        {
-            <div class="col s4">
-                <h3><a asp-action="Details" asp-route-id="@auction.Id">@auction.ProductName</a></h3>
-            </div>
-        }
-    </div>
-    <div class="col s3"></div>
+<h1 class="brand-logo black-text center">Active Auctions</h1>
 
-</div>
+<form asp-controller="Auction" asp-action="Create" method="post">
+    <div>
+        <table class="tabl table-hover table-bordered">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var auction in Model)
+                {
+                    <tr>
+                        <th><h5>@auction.ProductName</h5></th>
+                        <th>@auction.Price</th>
+                        <th><a asp-action="Details" asp-route-id="@auction.Id" class="btn waves-effect waves-purple">Auction Details</a>
+                            <a asp-controller="Bid" asp-action="Create" asp-route-id="@auction.Id" class="btn waves-effect waves-orange grey">Make Bid</a></th>
+                        <th></th>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+</form>
+

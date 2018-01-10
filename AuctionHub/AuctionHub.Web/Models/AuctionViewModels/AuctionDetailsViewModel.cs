@@ -13,6 +13,7 @@ namespace AuctionHub.Web.Models.AuctionViewModels
     {
         public AuctionDetailsServiceModel Auction { get; set; }
         [Display(Name = "Last 10 bids")]
+        
         public IEnumerable<Bid> LastBids { get; set; }
     }
 }

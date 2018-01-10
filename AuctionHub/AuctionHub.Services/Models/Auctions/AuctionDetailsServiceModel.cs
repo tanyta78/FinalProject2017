@@ -15,6 +15,7 @@
         public string LastBidder { get; set; }
         public string CategoryName { get; set; }
         public string ProductName { get; set; }
+        public List<Picture> Pictures { get; set; } = new List<Picture>();
 
         //public void ConfigureMapping(Profile mapper)
         //{

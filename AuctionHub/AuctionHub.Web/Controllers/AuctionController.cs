@@ -52,7 +52,8 @@
                                    OwnerName = a.Product?.Owner?.Name,
                                    ProductName = a.Product?.Name,
                                    Id = a.Id,
-                                   IsActive = a.IsActive
+                                   IsActive = a.IsActive,
+                                   Price = a.Price
                                }).Where(pr => pr.IsActive == true)
                                .ToList();
 
@@ -65,6 +66,13 @@
         public IActionResult Create(int id)
         {
             var loggedUserId = this.userManager.GetUserId(User);
+
+            
+
+            if(auctionService.IsAuctionExist(id))
+            {
+                return this.BadRequest("The selected product is already in active/inactive auction!");
+            }
 
             var newAuction = new AuctionFormModel()
             {

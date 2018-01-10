@@ -25,6 +25,12 @@
             var result = this.db
                  .Auctions
                  .FirstOrDefault(a => a.Id == id);
+
+            var product = this.db
+                .Products
+                .Include(x => x.Pictures)
+                .FirstOrDefault(x => x.Id == result.ProductId);
+
             var serviceModel = new AuctionDetailsServiceModel
             {
                 CategoryName = result.Category?.Name,
@@ -32,7 +38,8 @@
                 LastBidder = result.LastBidder?.UserName,
                 Price = result.Price,
                 ProductName = result.Product?.Name,
-                Id = result.Id
+                Id = result.Id,
+                Pictures = product.Pictures
             };
             //var result =  await this.db
             //     .Auctions
@@ -147,7 +154,7 @@
 
         public bool IsAuctionExist(int id)
         {
-            return this.db.Auctions.Any(a => a.Id == id);
+            return this.db.Auctions.Any(a => a.ProductId == id);
         }
     }
 }
