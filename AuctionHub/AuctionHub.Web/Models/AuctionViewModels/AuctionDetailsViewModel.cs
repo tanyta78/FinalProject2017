@@ -12,5 +12,6 @@
         [Display(Name = "Last 10 bids")]
         
         public IEnumerable<Bid> LastBids { get; set; }
+        public decimal CurrentBid { get; set; }
     }
 }

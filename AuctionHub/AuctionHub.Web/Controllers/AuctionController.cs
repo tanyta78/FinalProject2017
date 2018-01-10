@@ -182,7 +182,8 @@
             var model = new AuctionDetailsViewModel
             {
                 Auction = currentAuction,
-                LastBids = bids
+                LastBids = bids,
+                CurrentBid = 0
             };
 
 

@@ -7,9 +7,17 @@
 <h3 class="text center">Auction for product "@Model.Auction.ProductName"</h3>
 
 <div class="row">
-    <div class="col s4"></div>
-    <div class="col s4">
-        <h2 class="text center">Auction Details</h2>
+    <h2 class="text center">Current Bid: @(Model.CurrentBid)</h2>
+    
+    <div class="col s5"></div>
+    <div class="col s2">
+        <input type="text"/>
+        <a asp-controller="Bid" asp-action="Create" asp-route-id="@Model.Auction.Id" class="btn waves-effect waves-orange grey center-align col s12">Make Bid</a>
+    </div>
+    <div class="col s5"></div>
+</div>
+<div class="row">
+    <div class="col s6">
         <form asp-controller="Auction" asp-action="Details" method="post">
             <div>
                 <div>
@@ -43,37 +51,38 @@
                     </li>
                 }
             </ul>
-            <a asp-controller="Bid" asp-action="Create" asp-route-id="@Model.Auction.Id" class="btn waves-effect waves-orange grey">Make Bid</a>
             <a asp-controller="Auction" asp-action="Edit" asp-route-id="@Model.Auction.Id" class="btn waves-effect waves-yellow">Edit</a>
             <a asp-controller="Auction" asp-action="Delete" asp-route-id="@Model.Auction.Id" class="btn waves-effect red">Delete</a>
         </form>
+
     </div>
-    <h4>Comments:</h4>
-    <hr />
-    @if (User.Identity.IsAuthenticated)
-    {
-        <div>
-            <form asp-controller="Comments" asp-action="Add" asp-route-id="@Model.Id" method="post">
-                <textarea cols="60" rows="3" name="comment" id="comment"></textarea>
-                <br />
-                <input type="submit" class="btn btn-primary" value="Add Comment" />
-            </form>
-        </div>
-    }
-    else
-    {
-        <span>To comment in this aquarium, please <a asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Context.Request.Path">login</a> into your account.</span>
-    }
-    <br />
-    <div>
-        @foreach (var comment in Model.Auction.Comments)
+    <div class="col s6">
+        <h4>Comments:</h4>
+        <hr />
+        @if (User.Identity.IsAuthenticated)
         {
-            <div class="table-bordered">
-                <p>@comment.Author : @comment.Content</p>
-                <p class="small">@comment.PublishDate.ToShortDateString()</p>
+            <div>
+                <form asp-controller="Comments" asp-action="Add" asp-route-id="@Model.Auction.Id" method="post">
+                    <textarea cols="60" rows="3" name="comment" id="comment"></textarea>
+                    <br />
+                    <input type="submit" class="btn btn-primary" value="Add Comment" />
+                </form>
             </div>
         }
+        else
+        {
+            <span>To comment in this aquarium, please <a asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Context.Request.Path">login</a> into your account.</span>
+        }
+        <br />
+        <div>
+            @foreach (var comment in Model.Auction.Comments)
+            {
+                <div class="table-bordered">
+                    <p>@comment.Author : @comment.Content</p>
+                    <p class="small">@comment.PublishDate.ToShortDateString()</p>
+                </div>
+            }
+        </div>
     </div>
-    <div class="col s4"></div>
 </div>
 
