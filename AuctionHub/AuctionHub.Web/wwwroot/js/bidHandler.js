@@ -6,12 +6,23 @@ var auctionConnection = new signalR.HubConnection(auctionHub, logger);
 auctionConnection.onClosed = e => { console.log("connection closed") };
 
 auctionConnection.on("Bid", (bidderName, bid) => {
-    $("#result").append(`<div>Bidder Name: ${bidderName} has bid ${bid} dollars</div>`);
+    $("#result").text(bid + " by " + bidderName);
 });
 
 auctionConnection.start().catch(err => { console.log("connection error") });
 
-function bid(bidderName) {
-    var bid = $("#bid").val();
-    auctionConnection.invoke("Bid", bidderName, bid);
+function bid(bidderName, auctionId) {
+    var value = $("#bid").val();
+    var url = `https://localhost:44346/Bid/Create?auctionId=${auctionId}&value=${value}`
+    $.ajax({
+        method: "GET",
+        url: url,
+        success: () => {
+            auctionConnection.invoke("Bid", bidderName, value);
+            notifier.showSuccess("Bid successful");
+        },
+        error: (error) => {
+            notifier.showError(error.responseText);
+        }
+    });
 }

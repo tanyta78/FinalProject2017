@@ -30,6 +30,8 @@
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<User>().HasMany(u => u.Bids).WithOne(b => b.User).HasForeignKey(b => b.UserId);
+
             builder.ApplyConfiguration(new AddressConfig());
             builder.ApplyConfiguration(new ProductConfig());
             builder.ApplyConfiguration(new AuctionConfig());

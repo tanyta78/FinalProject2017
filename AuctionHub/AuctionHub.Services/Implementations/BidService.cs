@@ -7,24 +7,31 @@
     using Contracts;
     using Data;
     using Data.Models;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.EntityFrameworkCore;
 
     public class BidService :  IBidService
     {
         private readonly AuctionHubDbContext db;
+        private readonly UserManager<User> userManager;
 
-        public BidService(AuctionHubDbContext db)
+
+        public BidService(AuctionHubDbContext db, UserManager<User> userManager)
         {
             this.db = db;
+            this.userManager = userManager;
         }
 
         public async Task CreateAsync(DateTime bidTime, decimal value, string userId, int auctionId)
         {
+            User bidder = await this.userManager.FindByIdAsync(userId);
             var bid = new Bid
             {
                 BidTime = bidTime,
                 Value = value,
-                UserId = userId,
-                AuctionId = auctionId
+                UserId = bidder.Id,
+                User = bidder,
+                AuctionId = auctionId,
             };
 
             await this.db.Bids.AddAsync(bid);
@@ -32,7 +39,7 @@
         }
 
         public IEnumerable<Bid> GetForAuction(int auctionId) 
-            =>this.db.Bids.Where(b => b.AuctionId == auctionId).ToList();
+            =>this.db.Bids.Include(b => b.User).Where(b => b.AuctionId == auctionId).ToList();
         
     }
 }

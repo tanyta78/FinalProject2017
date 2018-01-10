@@ -183,7 +183,7 @@
             {
                 Auction = currentAuction,
                 LastBids = bids,
-                CurrentBid = 0
+                CurrentBid = bids.Count() > 0 ? bids.FirstOrDefault(b => b.Value == bids.Select(bd => bd.Value).Max()) : null
             };
 
 

@@ -6,6 +6,8 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
 
     public class BidController : BaseController
@@ -21,14 +23,21 @@
 
         public async Task<IActionResult> Create(int auctionId, decimal value)
         {
+            IEnumerable<Bid> allByAuction = this.bidService.GetForAuction(auctionId);
+            decimal maxBid = allByAuction.Select(b => b.Value).Max();
+            if (maxBid >= value)
+            {
+                return BadRequest($"Bid value cannot be less than or equal to {maxBid}");
+            }
+
             var userId = this.userManager.GetUserId(User);
 
             var bidTime = DateTime.UtcNow;
 
             await this.bidService
                 .CreateAsync(bidTime, value, userId, auctionId);
-
-            return RedirectToAction(string.Concat(nameof(AuctionController.Details), "/", "Auction"));
+            return Ok();
+            //return RedirectToAction(string.Concat(nameof(AuctionController.Details), "/", "Auction"));
         }
     }
 }
