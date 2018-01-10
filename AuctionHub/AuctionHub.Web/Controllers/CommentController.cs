@@ -33,7 +33,7 @@
 
             await this.comments.AddAsync(comment, userId, id);
 
-            return RedirectToAction(nameof(AuctionController.Details), "Auctions", new { id });
+            return RedirectToAction(nameof(AuctionController.Details), "Auction", new { id });
         }
     }
 }
