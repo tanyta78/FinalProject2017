@@ -1,6 +1,5 @@
 ﻿namespace AuctionHub.Web.Controllers
 {
-    using AuctionHub.Data;
     using AuctionHub.Data.Models;
     using AuctionHub.Services.Contracts;
     using Microsoft.AspNetCore.Identity;
@@ -16,7 +15,7 @@
         private readonly IAuctionService auctionService;
         private readonly UserManager<User> userManager;
 
-        public BidController(IBidService bidService, IAuctionService auctionService, AuctionHubDbContext db, UserManager<User> userManager)
+        public BidController(IBidService bidService, IAuctionService auctionService, UserManager<User> userManager)
         {
             this.bidService = bidService;
             this.auctionService = auctionService;
@@ -27,6 +26,14 @@
         {
             IEnumerable<Bid> allByAuction = this.bidService.GetForAuction(auctionId);
             var auction = await this.auctionService.GetAuctionByIdAsync(auctionId);
+
+            var userId = this.userManager.GetUserId(User);
+
+            if (userId == auction.OwnerId)
+            {
+                return BadRequest("You cannot bid the price of your own auction!");
+            }
+
             var initialPrice = auction.Price;
 
             decimal maxBid = allByAuction.Any() 
@@ -37,20 +44,12 @@
             {
                 return BadRequest($"Bid value cannot be less than or equal to {maxBid}");
             }
-
-            var userId = this.userManager.GetUserId(User);
-
-            if (userId == auction.OwnerId)
-            {
-                return BadRequest("You cannot bid the price of your own auction!");
-            }
-
+            
             var bidTime = DateTime.UtcNow;
 
             await this.bidService
                 .CreateAsync(bidTime, value, userId, auctionId);
             return Ok();
-            //return RedirectToAction(string.Concat(nameof(AuctionController.Details), "/", "Auction"));
         }
     }
 }
