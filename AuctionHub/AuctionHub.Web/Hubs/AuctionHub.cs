@@ -9,5 +9,10 @@ namespace AuctionHub.Web.Hubs
         {
             await this.Clients.All.InvokeAsync("Bid", bidderName, bid);
         }
+
+        public async Task Comment(string author, string comment, string publishDate)
+        {
+            await this.Clients.All.InvokeAsync("Comment", author, comment, publishDate);
+        }
     }
 }

@@ -15,12 +15,12 @@
             this.db = db;
         }
 
-        public async Task AddAsync(string comment, string authorId, int auctionId)
+        public async Task AddAsync(string comment, string authorId, int auctionId, DateTime publishDate)
         {
             var result = new Comment
             {
                 Content = comment,
-                PublishDate = DateTime.UtcNow,
+                PublishDate = publishDate,
                 AuthorId = authorId,
                 AuctionId = auctionId
             };

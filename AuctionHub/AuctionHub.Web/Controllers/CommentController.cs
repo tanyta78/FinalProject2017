@@ -5,6 +5,7 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Services.Contracts;
+    using System;
     using System.Threading.Tasks;
 
     public class CommentController : BaseController
@@ -21,19 +22,21 @@
         }
 
         [Authorize]
-        [HttpPost]
+        [HttpGet]
         public async Task<IActionResult> Add(int id, string comment)
         {
-            if (!ModelState.IsValid)
+            if (string.IsNullOrEmpty(comment))
             {
-                return BadRequest();
+                return BadRequest("Comment cannot be empty");
             }
 
             var userId = this.userManager.GetUserId(User);
+            var publishDate = DateTime.UtcNow;
+            await this.comments.AddAsync(comment, userId, id, publishDate);
 
-            await this.comments.AddAsync(comment, userId, id);
+            return Ok(publishDate.ToShortDateString());
 
-            return RedirectToAction(nameof(AuctionController.Details), "Auction", new { id });
+            //return RedirectToAction(nameof(AuctionController.Details), "Auction", new { id });
         }
     }
 }

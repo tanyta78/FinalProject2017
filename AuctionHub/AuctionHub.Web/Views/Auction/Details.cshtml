@@ -63,11 +63,14 @@
         @if (User.Identity.IsAuthenticated)
         {
             <div>
-                <form asp-controller="Comment" asp-action="Add" asp-route-id="@Model.Auction.Id" method="post">
+                @*<form asp-controller="Comment" asp-action="Add" asp-route-id="@Model.Auction.Id" method="post">
                     <textarea cols="60" rows="3" name="comment" id="comment"></textarea>
                     <br />
                     <input type="submit" class="btn btn-primary" value="Add Comment" />
-                </form>
+                </form>*@
+                <textarea cols="60" rows="3" name="comment" id="comment"></textarea>
+                <br />
+                <a class="btn btn-primary" onclick="comment('@User.Identity.Name', @Model.Auction.Id)">ADD COMMENT</a>
             </div>
         }
         else
@@ -75,12 +78,12 @@
             <span>To comment in this auction, please <a asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Context.Request.Path">login</a> into your account.</span>
         }
         <br />
-        <div>
+        <div id="comments">
             @foreach (var comment in Model.Auction.Comments)
             {
-                <div class="table-bordered">
-                    <p>@comment.Author : @comment.Content</p>
-                    <p class="small">@comment.PublishDate.ToShortDateString()</p>
+                <div class="card-panel">
+                    <div class="card-content flow-text">@comment.Author : @comment.Content</div>
+                    <p class="small"><i>@comment.PublishDate.ToShortDateString() </i></p>
                 </div>
             }
         </div>

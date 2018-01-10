@@ -86,7 +86,7 @@
 
             app.UseSignalR(routes =>
             {
-                routes.MapHub<AuctionHub.Web.Hubs.AuctionHub>("bid");
+                routes.MapHub<AuctionHub.Web.Hubs.AuctionHub>("AuctionHub");
             });
 
             app.UseMvc(routes =>
