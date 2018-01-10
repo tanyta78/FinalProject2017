@@ -23,5 +23,8 @@
         public const int AuctionNameMinLength = 2;
         public const int AuctionNameMaxLength = 30;
         public const int AuctionToShow = 5;
+
+        public const int CommentContentMinLength = 2;
+        public const int CommentContentMaxLength = 5000;
     }
 }

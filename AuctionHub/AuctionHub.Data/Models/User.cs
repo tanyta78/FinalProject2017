@@ -29,5 +29,7 @@
         public List<Auction> ParticipatedAuctions { get; set; } = new List<Auction>();
 
         public List<Picture> Pictures { get; set; } = new List<Picture>();
+
+        public List<Comment> Comments { get; set; } = new List<Comment>();
     }
 }

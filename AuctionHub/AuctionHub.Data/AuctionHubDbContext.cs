@@ -26,6 +26,8 @@
 
         public DbSet<Picture> Pictures { get; set; }
 
+        public DbSet<Comment> Comments { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.ApplyConfiguration(new AddressConfig());
@@ -34,8 +36,9 @@
             builder.ApplyConfiguration(new BidConfig());
             builder.ApplyConfiguration(new CategoryConfig());
             builder.ApplyConfiguration(new PictureConfig());
+            builder.ApplyConfiguration(new CommentConfig());
 
-           base.OnModelCreating(builder);
+            base.OnModelCreating(builder);
         }
     }
 }
