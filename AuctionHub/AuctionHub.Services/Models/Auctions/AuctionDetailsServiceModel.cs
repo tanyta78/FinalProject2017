@@ -1,25 +1,31 @@
 ﻿namespace AuctionHub.Services.Models.Auctions
 {
-    using AuctionHub.Common.Mapping;
-    using AutoMapper;
+    using Common.Mapping;
     using Data.Models;
-    using System;
+    using Services.Models.Comments;
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
 
     public class AuctionDetailsServiceModel : IMapFrom<Auction>/*, IHaveCustomMapping*/
     {
         public int Id { get; set; }
+
         public string Description { get; set; }
+
         public string OwnerId { get; set; }
 
-        public User Owner { get; set; }
+        //public User Owner { get; set; }
 
         public decimal Price { get; set; }
+
         public string LastBidder { get; set; }
+
         public string CategoryName { get; set; }
+
         public string ProductName { get; set; }
+
         public List<Picture> Pictures { get; set; } = new List<Picture>();
+
+        public List<CommentServiceModel> Comments { get; set; } = new List<CommentServiceModel>();
 
         //public void ConfigureMapping(Profile mapper)
         //{

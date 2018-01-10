@@ -176,7 +176,9 @@
             {
                 return NotFound();
             }
+
             IEnumerable<Bid> bids = this.bids.GetForAuction(id);
+
             var model = new AuctionDetailsViewModel
             {
                 Auction = currentAuction,

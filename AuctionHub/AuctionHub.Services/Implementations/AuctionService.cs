@@ -1,5 +1,6 @@
 ﻿namespace AuctionHub.Services.Implementations
 {
+    using AuctionHub.Services.Models.Comments;
     using AutoMapper.QueryableExtensions;
     using Contracts;
     using Data;
@@ -21,33 +22,54 @@
         }
 
         public async Task<AuctionDetailsServiceModel> GetAuctionByIdAsync(int id)
-        {
-            var result = this.db
-                 .Auctions
-                 .FirstOrDefault(a => a.Id == id);
+            => await this.db
+                .Auctions
+                .Where(a => a.Id == id)
+                .Select(a => new AuctionDetailsServiceModel
+                {
+                    Id = a.Id,
+                    Description = a.Description,
+                    Price = a.Price,
+                    LastBidder = a.LastBidder.Id,
+                    CategoryName = a.Category.Name,
+                    ProductName = a.Product.Name,
+                    Pictures = a.Product.Pictures,
+                    Comments = a.Comments
+                        .OrderByDescending(c => c.PublishDate)
+                        .Select(c => new CommentServiceModel
+                        {
+                            Author = c.Author.Name,
+                            Content = c.Content,
+                            PublishDate = c.PublishDate
+                        })
+                        .ToList()
+                })
+                .FirstOrDefaultAsync();
 
-            var product = this.db
-                .Products
-                .Include(x => x.Pictures)
-                .FirstOrDefault(x => x.Id == result.ProductId);
-
-            var serviceModel = new AuctionDetailsServiceModel
-            {
-                CategoryName = result.Category?.Name,
-                Description = result.Description,
-                LastBidder = result.LastBidder?.UserName,
-                Price = result.Price,
-                ProductName = result.Product?.Name,
-                Id = result.Id,
-                Pictures = product.Pictures
-            };
+            //var result = this.db
+            //     .Auctions
+            //     .FirstOrDefault(a => a.Id == id);
+            //
+            //var product = this.db
+            //    .Products
+            //    .Include(x => x.Pictures)
+            //    .FirstOrDefault(x => x.Id == result.ProductId);
+            //
+            //var serviceModel = new AuctionDetailsServiceModel
+            //{
+            //    CategoryName = result.Category?.Name,
+            //    Description = result.Description,
+            //    LastBidder = result.LastBidder?.UserName,
+            //    Price = result.Price,
+            //    ProductName = result.Product?.Name,
+            //    Id = result.Id,
+            //    Pictures = product.Pictures
+            //};
             //var result =  await this.db
             //     .Auctions
             //     .Where(a => a.Id == id)
             //     .ProjectTo<AuctionDetailsServiceModel>()
             //     .FirstOrDefaultAsync();
-            return serviceModel;
-        }
 
         public async Task<IEnumerable<AuctionDetailsServiceModel>> GetByCategoryNameAsync(string categoryName)
              => await this.db

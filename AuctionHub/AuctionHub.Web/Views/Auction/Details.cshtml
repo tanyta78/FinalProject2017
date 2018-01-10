@@ -48,6 +48,32 @@
             <a asp-controller="Auction" asp-action="Delete" asp-route-id="@Model.Auction.Id" class="btn waves-effect red">Delete</a>
         </form>
     </div>
+    <h4>Comments:</h4>
+    <hr />
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div>
+            <form asp-controller="Comments" asp-action="Add" asp-route-id="@Model.Id" method="post">
+                <textarea cols="60" rows="3" name="comment" id="comment"></textarea>
+                <br />
+                <input type="submit" class="btn btn-primary" value="Add Comment" />
+            </form>
+        </div>
+    }
+    else
+    {
+        <span>To comment in this aquarium, please <a asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Context.Request.Path">login</a> into your account.</span>
+    }
+    <br />
+    <div>
+        @foreach (var comment in Model.Auction.Comments)
+        {
+            <div class="table-bordered">
+                <p>@comment.Author : @comment.Content</p>
+                <p class="small">@comment.PublishDate.ToShortDateString()</p>
+            </div>
+        }
+    </div>
     <div class="col s4"></div>
 </div>
 

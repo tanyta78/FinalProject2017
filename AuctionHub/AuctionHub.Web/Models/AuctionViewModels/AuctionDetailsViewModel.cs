@@ -1,14 +1,11 @@
-﻿using AuctionHub.Common.Mapping;
-using AuctionHub.Data.Models;
-using AuctionHub.Services.Models.Auctions;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace AuctionHub.Web.Models.AuctionViewModels
+﻿namespace AuctionHub.Web.Models.AuctionViewModels
 {
+    using AuctionHub.Services.Models.Auctions;
+    using Common.Mapping;
+    using Data.Models;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+
     public class AuctionDetailsViewModel : IMapFrom<Auction>
     {
         public AuctionDetailsServiceModel Auction { get; set; }
