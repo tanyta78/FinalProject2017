@@ -26,6 +26,7 @@
             };
 
             this.db.Add(result);
+
             await this.db.SaveChangesAsync();
         }
     }
