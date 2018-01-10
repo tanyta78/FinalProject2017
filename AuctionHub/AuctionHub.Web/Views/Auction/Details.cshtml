@@ -63,7 +63,7 @@
         @if (User.Identity.IsAuthenticated)
         {
             <div>
-                <form asp-controller="Comments" asp-action="Add" asp-route-id="@Model.Auction.Id" method="post">
+                <form asp-controller="Comment" asp-action="Add" asp-route-id="@Model.Auction.Id" method="post">
                     <textarea cols="60" rows="3" name="comment" id="comment"></textarea>
                     <br />
                     <input type="submit" class="btn btn-primary" value="Add Comment" />
@@ -72,7 +72,7 @@
         }
         else
         {
-            <span>To comment in this aquarium, please <a asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Context.Request.Path">login</a> into your account.</span>
+            <span>To comment in this auction, please <a asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Context.Request.Path">login</a> into your account.</span>
         }
         <br />
         <div>
