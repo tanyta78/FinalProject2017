@@ -10,6 +10,8 @@
 
         public DateTime EndDate { get; set; }
 
+        public decimal Price { get; set; }
+
         public decimal LastBiddedPrice { get; set; }
 
         public string OwnerName { get; set; }
@@ -19,6 +21,8 @@
         public string PicturePath { get; set; }
 
         public int CategoryId { get; set; }
+
+        public string CategoryName { get; set; }
 
         public int ProductId { get; set; }
     }

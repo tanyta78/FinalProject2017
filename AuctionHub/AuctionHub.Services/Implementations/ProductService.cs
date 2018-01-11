@@ -81,6 +81,13 @@
                 .ProjectTo<ProductDetailsServiceModel>()
                 .FirstOrDefaultAsync();
 
+        public Task<ProductDetailsServiceModel> GetProductByNameAsync(string name)
+            => this.db
+                .Products
+                .Where(p => p.Name == name)
+                .ProjectTo<ProductDetailsServiceModel>()
+                .FirstOrDefaultAsync();
+
         public async Task<ProductDetailsServiceModel> GetProductByPictureId(int pictureId)
         {
             var product = await this.db

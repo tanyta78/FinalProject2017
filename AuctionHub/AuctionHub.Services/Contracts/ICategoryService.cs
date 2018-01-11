@@ -9,6 +9,8 @@
 
         Category GetCategoryById(int id);
 
+        Category GetCategoryByName(string name);
+
         void Create(string name);
 
         void Delete(int id);

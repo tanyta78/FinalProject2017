@@ -30,9 +30,9 @@
                     <a asp-controller="Product" asp-action="DeletePicture" asp-route-id="@picture.Id" class="btn waves-effect waves-yellow">Delete this Picture</a>
                 }
             </div>
-
+            @*<button type="button" class="cancel; btn waves-effect waves-yellow" ;return false;">Cancel</button>*@
             <a asp-action="AddPictures" asp-route-id="@Model.Id" class="btn waves-effect waves-yellow">Edit pictures</a>
-            <input class="btn waves-effect waves-yellow" type="submit" value="Confirm Changes" />
+            <input class="btn waves-effect waves-yellow red" type="submit" value="Confirm Changes" />
         </form>
     </div>
     <div class="col s4"></div>

@@ -238,6 +238,8 @@
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
+            var loggedUserId = this.userManager.GetUserId(User);
+
             var currentAuction = await this.auctionService.GetAuctionByIdAsync(id);
 
             if (currentAuction == null)
@@ -245,50 +247,67 @@
                 return NotFound();
             }
 
-            return this.View(currentAuction);
+            if (currentAuction.OwnerId != loggedUserId)
+            {
+                return BadRequest("You are not owner/administrator of this auction!");
+            }
+
+            var model = new AuctionEditViewModel
+            {
+                ProductName = currentAuction.ProductName,
+                Description = currentAuction.Description,
+                //CategoryName = currentAuction.CategoryName,
+                Price = currentAuction.Price
+            };
+
+            return this.View(model);
         }
 
         //POST: Auction/Edit
         [HttpPost]
-        public async Task<IActionResult> Edit(AuctionEditViewModel auctionToEdit)
+        public async Task<IActionResult> EditConfirmed(AuctionEditViewModel model)
         {
             //if (!ModelState.IsValid)
             //{
             //    return View(auctionToEdit);
             //}
 
+            var auction = await this.auctionService.GetAuctionByIdAsync(model.Id);
+
+            var product = await this.productService.GetProductByIdAsync(model.ProductId);
+
             User loggedUser = await this.userManager.FindByNameAsync(this.User.Identity.Name);
 
-            if (!this.categoryService.IsCategoryExist(auctionToEdit.CategoryId))
-            {
-                return this.BadRequest();
-            }
-
-            var categoryForAuction = this.categoryService.GetCategoryById(auctionToEdit.CategoryId);
-
-            if (!this.productService.IsProductExist(auctionToEdit.ProductId))
+            //var categoryForAuction = this.categoryService.GetCategoryByName(auction.CategoryName);
+            
+            //if (categoryForAuction == null)
+            //{
+            //    return this.BadRequest();
+            //}
+            
+            if (product == null)
             {
                 RedirectToAction(nameof(ProductController.List), "Product");
             }
 
-            var productForAuction = await this.productService.GetProductByIdAsync(auctionToEdit.ProductId);
-
-            if (productForAuction.OwnerId != loggedUser.Id)
+            if (product.OwnerId != loggedUser.Id)
             {
                 return Forbid();
             }
 
-            if (!IsValid(auctionToEdit))
+            if (!IsValid(auction))
             {
                 return this.BadRequest();
             }
 
             await this.auctionService.Edit(
-                auctionToEdit.Id,
-                auctionToEdit.EndDate
+                auction.Id,
+                auction.ProductName,
+                auction.Description,
+                auction.CategoryName
                 );
 
-            return RedirectToAction("Details");
+            return RedirectToAction(nameof(AuctionController.Index));
 
 
         }

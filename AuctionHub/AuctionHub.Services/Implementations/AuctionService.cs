@@ -164,15 +164,20 @@
            // await this.db.SaveChangesAsync();
         }
 
-        public async Task Edit(int id, DateTime endDate)
+        public async Task Edit(int id, string productName, string description, string categoryName)
         {
             var auction = await this.GetAuctionByIdAsync(id);
 
-            if (endDate < DateTime.UtcNow)
-            {
-                return;
-            }
+            //if (endDate < DateTime.UtcNow)
+            //{
+            //    return;
+            //}
             //auction.EndDate = endDate;
+            auction.Id = id;
+            
+            //auction.CategoryName = categoryName;
+            auction.ProductName = productName;
+            auction.Description = description;
 
             await this.db.SaveChangesAsync();
         }

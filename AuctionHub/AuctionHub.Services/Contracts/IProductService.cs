@@ -17,6 +17,8 @@
 
         Task<ProductDetailsServiceModel> GetProductByIdAsync(int id);
 
+        Task<ProductDetailsServiceModel> GetProductByNameAsync(string name);
+
         Task<ProductDetailsServiceModel> GetProductByPictureId(int pictureId);
 
         bool IsProductExist(int id);

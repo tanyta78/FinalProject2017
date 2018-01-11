@@ -17,7 +17,7 @@
 
         Task Delete(int id);
 
-        Task Edit(int id, DateTime endDate);
+        Task Edit(int id, string productName, string description, string categoryName);
 
         IEnumerable<Auction> IndexAuctionsList();
 
