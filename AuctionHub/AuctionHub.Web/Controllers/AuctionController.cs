@@ -304,8 +304,8 @@
 
             await this.auctionService.Edit(
                 auction.Id,
-                auction.ProductName = model.ProductName,
-                auction.Description = model.Description,
+                model.ProductName,
+                model.Description,
                 auction.CategoryName,
                 auction.ProductId
                 );
