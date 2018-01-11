@@ -24,6 +24,7 @@
         public async Task<AuctionDetailsServiceModel> GetAuctionByIdAsync(int id)
             => await this.db
                 .Auctions
+                .Include(x => x.Product)
                 .Where(a => a.Id == id)
                 .Select(a => new AuctionDetailsServiceModel
                 {
@@ -33,6 +34,7 @@
                     Price = a.Price,
                     LastBidder = a.LastBidder.Id,
                     CategoryName = a.Category.Name,
+                    ProductId = a.ProductId,
                     ProductName = a.Product.Name,
                     Pictures = a.Product.Pictures,
                     Comments = a.Comments
@@ -164,9 +166,10 @@
            // await this.db.SaveChangesAsync();
         }
 
-        public async Task Edit(int id, string productName, string description, string categoryName)
+        public async Task Edit(int id, string productName, string description, string categoryName, int productId)
         {
-            var auction = await this.GetAuctionByIdAsync(id);
+            var auction = await this.db.Auctions.FindAsync(id);
+            
 
             //if (endDate < DateTime.UtcNow)
             //{
@@ -174,9 +177,9 @@
             //}
             //auction.EndDate = endDate;
             auction.Id = id;
-            
+
             //auction.CategoryName = categoryName;
-            auction.ProductName = productName;
+            auction.ProductId = productId;
             auction.Description = description;
 
             await this.db.SaveChangesAsync();

@@ -8,6 +8,7 @@
         <h2 class="text center">Create Auction</h2>
         <form method="post" asp-action="Create">
             @Html.EditorForModel()
+            <button type="button" class="cancel; btn waves-effect waves-yellow" onclick="location.href='/Product/Details/@Model.ProductId';return false;">Cancel</button>
             <input class="btn" type="submit" value="Create" />
         </form>
     </div>

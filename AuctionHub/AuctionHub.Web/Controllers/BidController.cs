@@ -29,13 +29,19 @@
         public async Task<IActionResult> Create(int auctionId, decimal value)
         {
             IEnumerable<Bid> allByAuction = this.bidService.GetForAuction(auctionId);
-            decimal maxBid = 0;
+            var currentAuction = await this.auctionService.GetAuctionByIdAsync(auctionId);
+
+            decimal startingPrice = currentAuction.Price;
+            decimal maxBid = startingPrice;
+
             if (allByAuction.Count() > 0)
             {
                 maxBid = allByAuction.Select(b => b.Value).Max();
             }
 
-            if (maxBid >= value)
+            
+
+            if (maxBid >= value || value < currentAuction.Price)
             {
                 return BadRequest($"Bid value cannot be less than or equal to {maxBid}");
             }

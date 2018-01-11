@@ -20,6 +20,7 @@
                     @Html.TextAreaFor(m => m.Description, new { @readonly = "readonly" })
                 </div>
             </div>
+            <button type="button" class="cancel; btn waves-effect waves-yellow" onclick="location.href='/Product/Details/@Model.Id';return false;">Cancel</button>
             <input class="btn waves-effect red" type="submit" value="Confirm Deletion" />
         </form>
         </div>

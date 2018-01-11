@@ -170,7 +170,7 @@
 
             var model = new ProductViewModel()
             {
-                //Id = productToBeDeleted.Id,
+                Id = productToBeDeleted.Id,
                 Name = productToBeDeleted.Name,
                 Description = productToBeDeleted.Description
             };

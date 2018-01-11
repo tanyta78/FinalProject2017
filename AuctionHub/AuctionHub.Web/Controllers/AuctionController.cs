@@ -252,20 +252,24 @@
                 return BadRequest("You are not owner/administrator of this auction!");
             }
 
-            var model = new AuctionEditViewModel
+            var product = await this.productService.GetProductByNameAsync(currentAuction.ProductName);
+
+            var model = new AuctionEditViewModel()
             {
+                Id = currentAuction.Id,
                 ProductName = currentAuction.ProductName,
                 Description = currentAuction.Description,
                 //CategoryName = currentAuction.CategoryName,
-                Price = currentAuction.Price
+                Price = currentAuction.Price,
+                ProductId = product.Id
             };
 
-            return this.View(model);
+            return View(model);
         }
 
         //POST: Auction/Edit
         [HttpPost]
-        public async Task<IActionResult> EditConfirmed(AuctionEditViewModel model)
+        public async Task<IActionResult> Edit(AuctionEditViewModel model)
         {
             //if (!ModelState.IsValid)
             //{
@@ -273,8 +277,6 @@
             //}
 
             var auction = await this.auctionService.GetAuctionByIdAsync(model.Id);
-
-            var product = await this.productService.GetProductByIdAsync(model.ProductId);
 
             User loggedUser = await this.userManager.FindByNameAsync(this.User.Identity.Name);
 
@@ -285,12 +287,12 @@
             //    return this.BadRequest();
             //}
             
-            if (product == null)
+            if (auction.ProductId == 0)
             {
                 RedirectToAction(nameof(ProductController.List), "Product");
             }
 
-            if (product.OwnerId != loggedUser.Id)
+            if (auction.OwnerId != loggedUser.Id)
             {
                 return Forbid();
             }
@@ -302,9 +304,10 @@
 
             await this.auctionService.Edit(
                 auction.Id,
-                auction.ProductName,
-                auction.Description,
-                auction.CategoryName
+                auction.ProductName = model.ProductName,
+                auction.Description = model.Description,
+                auction.CategoryName,
+                auction.ProductId
                 );
 
             return RedirectToAction(nameof(AuctionController.Index));
