@@ -11,5 +11,7 @@
         public DateTime PublishDate { get; set; }
 
         public string Author { get; set; }
+
+        public bool IsUserAuthor { get; set; }
     }
 }

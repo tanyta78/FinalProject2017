@@ -21,7 +21,7 @@
             this.db = db;
         }
 
-        public async Task<AuctionDetailsServiceModel> GetAuctionByIdAsync(int id)
+        public async Task<AuctionDetailsServiceModel> GetAuctionByIdAsync(int id, string userId)
             => await this.db
                 .Auctions
                 .Include(x => x.Product)
@@ -43,7 +43,8 @@
                         {
                             Author = c.Author.Name,
                             Content = c.Content,
-                            PublishDate = c.PublishDate
+                            PublishDate = c.PublishDate,
+                            IsUserAuthor = this.IsAuthor(userId)
                         })
                         .ToList()
                 })
@@ -199,5 +200,8 @@
         {
             return this.db.Auctions.Any(a => a.ProductId == id);
         }
+
+        public bool IsAuthor(string id)
+            => this.db.Comments.Any(c => c.AuthorId == id);
     }
 }

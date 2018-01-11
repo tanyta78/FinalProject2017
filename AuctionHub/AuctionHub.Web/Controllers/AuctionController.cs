@@ -168,7 +168,9 @@
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
-            AuctionDetailsServiceModel currentAuction = await this.auctionService.GetAuctionByIdAsync(id);
+            var userId = this.userManager.GetUserId(User);
+
+            AuctionDetailsServiceModel currentAuction = await this.auctionService.GetAuctionByIdAsync(id, userId);
 
             if (currentAuction == null)
             {
@@ -192,9 +194,11 @@
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
+            var userId = this.userManager.GetUserId(User);
+
             var loggedUserId = this.userManager.GetUserId(User);
 
-            var currentAuction = await this.auctionService.GetAuctionByIdAsync(id);
+            var currentAuction = await this.auctionService.GetAuctionByIdAsync(id, userId);
 
             if (currentAuction == null)
             {
@@ -221,7 +225,9 @@
         [ActionName("Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var currentAuction = await this.auctionService.GetAuctionByIdAsync(id);
+            var userId = this.userManager.GetUserId(User);
+
+            var currentAuction = await this.auctionService.GetAuctionByIdAsync(id, userId);
 
             if (currentAuction == null)
             {
@@ -238,9 +244,11 @@
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
+            var userId = this.userManager.GetUserId(User);
+
             var loggedUserId = this.userManager.GetUserId(User);
 
-            var currentAuction = await this.auctionService.GetAuctionByIdAsync(id);
+            var currentAuction = await this.auctionService.GetAuctionByIdAsync(id, userId);
 
             if (currentAuction == null)
             {
@@ -275,8 +283,9 @@
             //{
             //    return View(auctionToEdit);
             //}
+            var userId = this.userManager.GetUserId(User);
 
-            var auction = await this.auctionService.GetAuctionByIdAsync(model.Id);
+            var auction = await this.auctionService.GetAuctionByIdAsync(model.Id, userId);
 
             User loggedUser = await this.userManager.FindByNameAsync(this.User.Identity.Name);
 

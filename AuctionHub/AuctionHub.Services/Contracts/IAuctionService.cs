@@ -11,7 +11,7 @@
     {
         bool IsAuctionExist(int id);
 
-        Task<AuctionDetailsServiceModel> GetAuctionByIdAsync(int id);
+        Task<AuctionDetailsServiceModel> GetAuctionByIdAsync(int id, string userId);
 
         Task Create(string description, decimal price, DateTime startDate, DateTime endDate, int categoryId, int productId);
 
@@ -23,6 +23,8 @@
 
         Task<IEnumerable<AuctionDetailsServiceModel>> GetByCategoryNameAsync(string categoryName);
 
-       Task<IQueryable<Auction>> ListAsync(string ownerId, int page, string search);
+        Task<IQueryable<Auction>> ListAsync(string ownerId, int page, string search);
+
+        bool IsAuthor(string id);
     }
 }

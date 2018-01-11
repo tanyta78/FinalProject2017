@@ -28,8 +28,9 @@
 
         public async Task<IActionResult> Create(int auctionId, decimal value)
         {
+            var userId = this.userManager.GetUserId(User);
             IEnumerable<Bid> allByAuction = this.bidService.GetForAuction(auctionId);
-            var currentAuction = await this.auctionService.GetAuctionByIdAsync(auctionId);
+            var currentAuction = await this.auctionService.GetAuctionByIdAsync(auctionId, userId);
 
             decimal startingPrice = currentAuction.Price;
             decimal maxBid = startingPrice;
@@ -46,8 +47,8 @@
                 return BadRequest($"Bid value cannot be less than or equal to {maxBid}");
             }
 
-            var userId = this.userManager.GetUserId(User);
-            var auction = await auctionService.GetAuctionByIdAsync(auctionId);
+            //var userId = this.userManager.GetUserId(User);
+            var auction = await auctionService.GetAuctionByIdAsync(auctionId, userId);
             
 
             if (userId == auction.OwnerId)
