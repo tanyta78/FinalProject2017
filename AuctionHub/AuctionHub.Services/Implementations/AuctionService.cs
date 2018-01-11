@@ -171,7 +171,7 @@
         {
             var auction = await this.db.Auctions.FindAsync(id);
             
-
+            
             //if (endDate < DateTime.UtcNow)
             //{
             //    return;
@@ -203,5 +203,6 @@
 
         public bool IsAuthor(string id)
             => this.db.Comments.Any(c => c.AuthorId == id);
+
     }
 }
