@@ -1,5 +1,6 @@
 ﻿namespace AuctionHub.Web.Controllers
 {
+    using AuctionHub.Web.Models.CommentViewModels;
     using Data.Models;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
@@ -32,20 +33,46 @@
 
             var userId = this.userManager.GetUserId(User);
             var publishDate = DateTime.UtcNow;
-            await this.comments.AddAsync(comment, userId, id, publishDate);
+            int newCommentId = await this.comments.AddAsync(comment, userId, id, publishDate);
 
-            return Ok(publishDate.ToShortDateString());
+            return Ok(new { publishDate = publishDate.ToShortDateString(), newCommentId });
 
             //return RedirectToAction(nameof(AuctionController.Details), "Auction", new { id });
         }
 
         [Authorize]
-        [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
+            Comment target = this.comments.GetById(id);
+
+            if (target.AuthorId != userManager.GetUserId(User))
+            {
+                return Forbid("You do not have permission to delete this comment");
+            }
+
             await this.comments.DeleteAsync(id);
 
-            return RedirectToAction(nameof(AuctionController.Details), "Auction", new { id });
+            return Ok();
+        }
+
+        [Authorize]
+        [HttpPost]
+        public IActionResult Edit(CommentEditViewModel model)
+        {
+            Comment target = this.comments.GetById(model.Id);
+
+            if (target.AuthorId != userManager.GetUserId(User))
+            {
+                return Forbid("You do not have permission to edit this comment");
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Invalid post data");
+            }
+
+            this.comments.Edit(model.Id, model.NewContent);
+
+            return Ok();
         }
     }
 }

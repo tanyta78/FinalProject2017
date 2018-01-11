@@ -41,10 +41,11 @@
                         .OrderByDescending(c => c.PublishDate)
                         .Select(c => new CommentServiceModel
                         {
+                            Id = c.Id,
                             Author = c.Author.Name,
                             Content = c.Content,
                             PublishDate = c.PublishDate,
-                            IsUserAuthor = this.IsAuthor(userId)
+                            IsUserAuthor = this.db.Comments.FirstOrDefault(cm => cm.Id == c.Id).AuthorId == userId
                         })
                         .ToList()
                 })
@@ -201,8 +202,8 @@
             return this.db.Auctions.Any(a => a.ProductId == id);
         }
 
-        public bool IsAuthor(string id)
-            => this.db.Comments.Any(c => c.AuthorId == id);
+        public bool IsAuthor(string userId, int commentId)
+            => this.db.Comments.FirstOrDefault(c => c.Id == commentId).AuthorId == userId;
 
     }
 }

@@ -64,10 +64,10 @@
         {
             <div>
                 @*<form asp-controller="Comment" asp-action="Add" asp-route-id="@Model.Auction.Id" method="post">
-                    <textarea cols="60" rows="3" name="comment" id="comment"></textarea>
-                    <br />
-                    <input type="submit" class="btn btn-primary" value="Add Comment" />
-                </form>*@
+                        <textarea cols="60" rows="3" name="comment" id="comment"></textarea>
+                        <br />
+                        <input type="submit" class="btn btn-primary" value="Add Comment" />
+                    </form>*@
                 <textarea cols="60" rows="3" name="comment" id="comment"></textarea>
                 <br />
                 <a class="btn btn-primary" onclick="comment('@User.Identity.Name', @Model.Auction.Id)">ADD COMMENT</a>
@@ -81,14 +81,14 @@
         <div id="comments">
             @foreach (var comment in Model.Auction.Comments)
             {
-                <div class="card-panel">
-                    <div class="card-content flow-text">@comment.Author : @comment.Content</div>
+                <div class="card-panel" 
+                     comment-id="@comment.Id"
+                     @(comment.IsUserAuthor ? "ondblclick=commentEditMode(" + comment.Id +")" : "")>
+                    <div class="card-content flow-text">@comment.Author : <span id="commentContent">@comment.Content</span></div>
                     <p class="small"><i>@comment.PublishDate.ToShortDateString() </i></p>
                     @if (comment.IsUserAuthor)
                     {
-                        <form asp-controller="Comment" asp-action="Delete" asp-route-id="@comment.Id" method="post" class="btn btn-sm">
-                            Delete
-                        </form>
+                        <a class="btn btn-sm" onclick="deleteComment(@comment.Id)">Delete</a>
                     }
                 </div>
             }
@@ -97,5 +97,10 @@
 </div>
 
 @section Scripts{
+    <script type="text/javascript" src="~/js/signalrHandler.js"></script>
     <script type="text/javascript" src="~/js/bidHandler.js"></script>
+    <script type="text/javascript" src="~/js/commentHandler.js"></script>
+    <script>
+        window.loggedInUser = '@User.Identity.Name';
+    </script>
 }

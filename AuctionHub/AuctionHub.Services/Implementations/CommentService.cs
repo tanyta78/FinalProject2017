@@ -17,7 +17,7 @@
             this.db = db;
         }
 
-        public async Task AddAsync(string comment, string authorId, int auctionId, DateTime publishDate)
+        public async Task<int> AddAsync(string comment, string authorId, int auctionId, DateTime publishDate)
         {
             var result = new Comment
             {
@@ -30,6 +30,7 @@
             this.db.Add(result);
 
             await this.db.SaveChangesAsync();
+            return result.Id;
         }
 
         public async Task DeleteAsync(int id)
@@ -46,6 +47,18 @@
 
             this.db.Remove(currentComment);
             await this.db.SaveChangesAsync();
+        }
+
+        public Comment GetById(int id) => this.db.Comments.FirstOrDefault(c => c.Id == id);
+
+        public void Edit(int id, string newContent)
+        {
+            Comment comment = this.db.Comments.FirstOrDefault(c => c.Id == id);
+            if (comment != null)
+            {
+                comment.Content = newContent;
+                this.db.SaveChanges();
+            }
         }
     }
 }

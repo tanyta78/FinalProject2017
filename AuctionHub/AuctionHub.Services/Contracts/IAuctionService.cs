@@ -25,6 +25,6 @@
 
         Task<IQueryable<Auction>> ListAsync(string ownerId, int page, string search);
 
-        bool IsAuthor(string id);
+        bool IsAuthor(string userId, int commentId);
     }
 }
