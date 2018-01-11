@@ -297,7 +297,7 @@
                 return Forbid();
             }
 
-            if (!IsValid(auction))
+            if (!IsValid(auction) || !IsValid(model.Description))
             {
                 return this.BadRequest();
             }

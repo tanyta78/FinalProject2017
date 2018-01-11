@@ -170,7 +170,7 @@
         {
             var auction = await this.db.Auctions.FindAsync(id);
             
-
+            
             //if (endDate < DateTime.UtcNow)
             //{
             //    return;
