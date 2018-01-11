@@ -41,7 +41,7 @@
 
             
 
-            if (maxBid >= value || value < currentAuction.Price)
+            if (maxBid >= value)
             {
                 return BadRequest($"Bid value cannot be less than or equal to {maxBid}");
             }
