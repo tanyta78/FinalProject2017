@@ -6,5 +6,7 @@
     public interface ICommentService
     {
         Task AddAsync(string comment, string authorId, int auctionId, DateTime publishDate);
+
+        Task DeleteAsync(int id);
     }
 }

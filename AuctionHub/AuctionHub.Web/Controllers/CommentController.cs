@@ -38,5 +38,12 @@
 
             //return RedirectToAction(nameof(AuctionController.Details), "Auction", new { id });
         }
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            await this.comments.DeleteAsync(id);
+
+            return RedirectToAction(nameof(AuctionController.Details), "Auction", new { id });
+        }
     }
 }
