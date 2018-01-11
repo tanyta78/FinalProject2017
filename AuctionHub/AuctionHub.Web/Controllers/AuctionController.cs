@@ -289,6 +289,12 @@
 
             User loggedUser = await this.userManager.FindByNameAsync(this.User.Identity.Name);
 
+            if(model.Description.Length < DataConstants.AuctionNameMinLength ||
+                model.Description.Length > DataConstants.AuctionNameMaxLength)
+            {
+                return BadRequest("Incorrect input length!");
+            }
+
             //var categoryForAuction = this.categoryService.GetCategoryByName(auction.CategoryName);
             
             //if (categoryForAuction == null)
@@ -306,7 +312,7 @@
                 return Forbid();
             }
 
-            if (!IsValid(auction) || !IsValid(model.Description))
+            if (!IsValid(auction))
             {
                 return this.BadRequest();
             }
@@ -319,7 +325,7 @@
                 auction.ProductId
                 );
 
-            return RedirectToAction(nameof(AuctionController.Index));
+            return RedirectToAction(string.Concat(nameof(AuctionController.Details), "/", model.Id), "Auction");
 
 
         }
