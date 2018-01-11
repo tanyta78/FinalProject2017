@@ -39,6 +39,8 @@
             //return RedirectToAction(nameof(AuctionController.Details), "Auction", new { id });
         }
 
+        [Authorize]
+        [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
             await this.comments.DeleteAsync(id);
