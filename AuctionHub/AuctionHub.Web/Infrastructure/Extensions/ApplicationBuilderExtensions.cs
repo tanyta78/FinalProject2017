@@ -105,6 +105,24 @@
                     });
                 }
                 db.SaveChanges();
+
+                Category initialCategory = db.Categories.FirstOrDefault(c => c.Name == "Other");
+                if (initialCategory == null)
+                {
+                    db.Categories.Add(new Category()
+                    {
+                        Name = "Other"
+                    });
+                    db.Categories.Add(new Category()
+                    {
+                        Name = "Collectibles"
+                    });
+                    db.Categories.Add(new Category()
+                    {
+                        Name = "Art"
+                    });
+                }
+                db.SaveChanges();
             }
         }
     }
