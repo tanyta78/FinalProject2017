@@ -54,7 +54,7 @@ function editComment(id) {
         data: { Id: id, NewContent: newContent },
         url: url,
         success: () => {
-            auctionConnection.invoke("EditComment", id);
+            auctionConnection.invoke("EditComment", id, newContent);
         },
         error: (error) => {
             notifier.showError(error.responseText);

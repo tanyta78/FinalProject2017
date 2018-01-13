@@ -22,8 +22,8 @@ auctionConnection.on("Comment", (author, comment, commentDate, newCommentId) => 
 auctionConnection.on("DeleteComment", (commentId) => {
     $(`div[comment-id=${commentId}]`).remove();
 });
-auctionConnection.on("EditComment", (id) => {
-    var newContent = $(`div[comment-id=${id}] .contentUpdate textarea`).val();
+auctionConnection.on("EditComment", (id, newContent) => {
+    //var newContent = $(`div[comment-id=${id}] textarea`).val();
     $(`div[comment-id=${id}] #commentContent`).text(newContent);
     closeEditMode();
 });

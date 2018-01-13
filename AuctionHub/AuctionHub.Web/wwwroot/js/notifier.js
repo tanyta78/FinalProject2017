@@ -1,6 +1,6 @@
 ﻿var notifier = notifier || {};
 
-(function () {
+$(document).ready(function () {
     toastr.options = {
         "closeButton": false,
         "debug": false,
@@ -18,7 +18,7 @@
         "showMethod": "fadeIn",
         "hideMethod": "fadeOut"
     }
-})();
+});
 
 
 notifier.showMessage = function (message, type) {

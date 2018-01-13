@@ -19,9 +19,9 @@ namespace AuctionHub.Web.Hubs
         {
             await this.Clients.All.InvokeAsync("DeleteComment", commentId);
         }
-        public async Task EditComment(string commentId)
+        public async Task EditComment(string commentId, string newContent)
         {
-            await this.Clients.All.InvokeAsync("EditComment", commentId);
+            await this.Clients.All.InvokeAsync("EditComment", commentId, newContent);
         }
     }
 }
