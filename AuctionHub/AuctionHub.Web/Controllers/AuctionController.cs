@@ -339,11 +339,6 @@
             return isValid;
         }
 
-        public IActionResult Test()
-        {
-            return View();
-        }
-
         private bool IsUserAuthorizedToEdit(string auctionOwnerId, string loggedUserId)
         {
             bool isAdmin = this.User.IsInRole("Administrator");
